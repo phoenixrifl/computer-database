@@ -1,8 +1,10 @@
 package persistence;
 
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import modele.Computer;
 
@@ -11,6 +13,7 @@ public class ComputerDAO extends DAO<Computer> {
 	public ComputerDAO(Connection conn) {
 		super(conn);
 	}
+	
 
 	@Override
 	public boolean create(Computer obj) {
@@ -29,6 +32,18 @@ public class ComputerDAO extends DAO<Computer> {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public ArrayList<Computer> findAll(){
+		ArrayList<Computer> computer_list = new ArrayList<Computer>();
+		try {
+			ResultSet result = this.connect.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM computer");
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return computer_list;
+	}
 
 	@Override
 	public Computer find(int id) {
@@ -45,7 +60,6 @@ public class ComputerDAO extends DAO<Computer> {
 						result.getInt("company_id"));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return computer;

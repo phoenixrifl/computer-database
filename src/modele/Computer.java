@@ -52,6 +52,12 @@ public class Computer {
 	public int getCompany_id() {
 		return company_id;
 	}
+
+	@Override
+	public String toString() {
+		return "Computer [id_=" + id_ + ", name=" + name + ", introduced=" + introduced + ", discontinued="
+				+ discontinued + ", company_id=" + company_id + "]";
+	}
 	
 	
 	
