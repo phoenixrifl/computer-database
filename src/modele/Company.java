@@ -30,7 +30,7 @@ public class Company {
 
 	@Override
 	public String toString() {
-		return "Company [id_=" + id_ + ", name=" + name + ", getId_()=" + getId_() + ", getName()=" + getName() + "]";
+		return "Company [id_=" + id_ + ", name=" + name + ", getId_()=" + getId_() + ", getName()=" + getName() + "]\n";
 	}
 
 

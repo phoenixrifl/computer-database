@@ -7,14 +7,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import modele.Computer;
 
 public class ComputerDAO extends DAO<Computer> {
 	
-
+	final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
+	final String SQL_DELETE = "DELETE FROM computer WHERE id=";
+	final String SQL_SELECT = "SELECT * FROM computer";
+	final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
+	
 	public ComputerDAO(Connection conn) {
 		super(conn);
 	}
@@ -26,15 +29,14 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public boolean create(Computer obj) {
-		String sql = "INSERT INTO computer (id,name,introduced,discontinued,company_id)";
-		sql+="VALUES (?,?,?,?,?,?,?,?,?);";
+
+		
 		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(sql);
-			preparedStatement.setObject(1, preparedStatement.getGeneratedKeys());
-			preparedStatement.setObject(2, obj.getName());
-			preparedStatement.setObject(3, obj.getIntroduced());
-			preparedStatement.setObject(4, obj.getDiscontinued());
-			preparedStatement.setObject(5, obj.getCompany_id());
+			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_INSERT);
+			preparedStatement.setObject(1, obj.getName());
+			preparedStatement.setObject(2, obj.getIntroduced());
+			preparedStatement.setObject(3, obj.getDiscontinued());
+			preparedStatement.setObject(4, obj.getCompany_id());
 			
 			preparedStatement.executeUpdate();
 
@@ -47,14 +49,14 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public boolean delete(Computer obj) {
-		String sql = "DElETE * FROM computer WHERE name="+obj.getName()+";";
+		
 		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(sql);
-			preparedStatement.executeUpdate(sql);
+			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_DELETE+obj.getId_());
+			preparedStatement.executeUpdate(SQL_DELETE);
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -68,7 +70,7 @@ public class ComputerDAO extends DAO<Computer> {
 		Computer tmp = null;
 		try {
 			ResultSet result = this.connect.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM computer");
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT);
 			while(result.next()) {
 					Date intro = result.getDate("introduced");
 					LocalDate convDate = null;
@@ -100,7 +102,7 @@ public class ComputerDAO extends DAO<Computer> {
 		Computer tmp = null;
 		try {
 			ResultSet result = this.connect.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM computer WHERE id = "+id);
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT_ONE+id);
 			if(result.first()) {
 				Date intro = result.getDate("introduced");
 				LocalDate convDate = null;
