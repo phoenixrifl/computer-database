@@ -21,16 +21,12 @@ public abstract class DAO<T> {
 	public DAO() {
 		if(this.connect == null) {
 			final Properties prop = new Properties();
-			InputStream input = null;
+			InputStream input = null;				
 			try {
-				input = new FileInputStream("db.properties");
-				prop.load(input);
-				
-				try {
-					 this.connect = DriverManager.getConnection(
-							prop.getProperty("db.url"),
-							prop.getProperty("db.username"),
-							prop.getProperty("db.password"));
+				this.connect = DriverManager.getConnection(
+							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC",
+							 "admincdb",
+							 "qwerty1234");
 				
 				
 				} catch (SQLException e) {
@@ -38,9 +34,7 @@ public abstract class DAO<T> {
 					e.printStackTrace();
 				}
 				
-			}catch(final IOException ex) {
-				ex.printStackTrace();
-			}
+			
 		}
 	}
 	
