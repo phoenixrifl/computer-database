@@ -1,6 +1,7 @@
 package dto;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import modele.Company;
@@ -18,11 +19,19 @@ public class Mappeur {
 	}
 	
 	public Computer DTOToModel(ComputerDTO computerDto) {
+		LocalDate convIntro = null;
+		LocalDate convDisco = null;
+		if(!computerDto.getIntroduced().equals("null")) 
+			convIntro = LocalDate.parse(computerDto.getIntroduced());
+		
+		if(!computerDto.getDiscontinued().equals("null"))
+			convDisco = LocalDate.parse(computerDto.getDiscontinued());
+		
 		return new Computer(
 				Integer.parseInt(computerDto.getId()),
 				computerDto.getName(),
-				Date.valueOf(computerDto.getIntroduced()).toLocalDate(),
-				Date.valueOf(computerDto.getDiscontinued()).toLocalDate(),
+				convIntro,
+				convDisco,
 				Integer.parseInt(computerDto.getCompany_id()));
 	}
 	

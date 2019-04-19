@@ -14,7 +14,7 @@ import modele.Computer;
 public class ComputerDAO extends DAO<Computer> {
 	
 	final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
-	final String SQL_DELETE = "DELETE FROM computer WHERE id=";
+	final String SQL_DELETE = "DELETE FROM computer WHERE id= ";
 	final String SQL_SELECT = "SELECT * FROM computer";
 	final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
 	
@@ -51,8 +51,8 @@ public class ComputerDAO extends DAO<Computer> {
 	public boolean delete(Computer obj) {
 		
 		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_DELETE+obj.getId_());
-			preparedStatement.executeUpdate(SQL_DELETE);
+			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_DELETE+obj.getId_()+";");
+			preparedStatement.executeUpdate();
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
