@@ -54,15 +54,13 @@ public class Ui {
 		return input;
 	}
 	
+	
+	
 	public static void afficher(Object obj) {
 		System.out.println(obj);
 		
 	}
 	
-//	public static void afficher(ArrayList<Object> obj) {
-//		for(Object o : obj) {
-//			System.out.println(o);
-//		}
-//	}
+
 	
 }

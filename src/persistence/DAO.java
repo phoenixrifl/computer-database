@@ -1,13 +1,10 @@
 package persistence;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public abstract class DAO<T> {
 	
@@ -20,8 +17,7 @@ public abstract class DAO<T> {
 	
 	public DAO() {
 		if(this.connect == null) {
-			final Properties prop = new Properties();
-			InputStream input = null;				
+						
 			try {
 				this.connect = DriverManager.getConnection(
 							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC",
@@ -30,7 +26,6 @@ public abstract class DAO<T> {
 				
 				
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				

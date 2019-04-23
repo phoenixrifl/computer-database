@@ -13,10 +13,11 @@ import modele.Computer;
 
 public class ComputerDAO extends DAO<Computer> {
 	
-	final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
-	final String SQL_DELETE = "DELETE FROM computer WHERE id= ";
-	final String SQL_SELECT = "SELECT * FROM computer";
-	final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
+	private final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
+	private final String SQL_DELETE = "DELETE FROM computer WHERE id= ";
+	private final String SQL_SELECT = "SELECT * FROM computer";
+	private final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
+	private final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
 	
 	public ComputerDAO(Connection conn) {
 		super(conn);
@@ -61,8 +62,17 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public boolean update(Computer obj) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_UPDATE+obj.getId_()+";");
+			preparedStatement.setObject(1, obj.getName());
+			preparedStatement.setObject(2, obj.getIntroduced());
+			preparedStatement.setObject(3, obj.getDiscontinued());
+			preparedStatement.setObject(4, obj.getCompany_id());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 	
 	public ArrayList<Computer> findAll(){
@@ -72,15 +82,15 @@ public class ComputerDAO extends DAO<Computer> {
 			ResultSet result = this.connect.createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT);
 			while(result.next()) {
-					Date intro = result.getDate("introduced");
+					Date introduced = result.getDate("introduced");
 					LocalDate convDate = null;
-					if(intro !=null) {
-						convDate = intro.toLocalDate();
+					if(introduced !=null) {
+						convDate = introduced.toLocalDate();
 					}
-					Date disco = result.getDate("discontinued");
+					Date discontinued = result.getDate("discontinued");
 					LocalDate convDate1 = null;
-					if(disco != null) {
-						convDate1 = disco.toLocalDate();
+					if(discontinued != null) {
+						convDate1 = discontinued.toLocalDate();
 					}
 					tmp = new Computer(
 							result.getInt("id"),
@@ -104,15 +114,15 @@ public class ComputerDAO extends DAO<Computer> {
 			ResultSet result = this.connect.createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT_ONE+id);
 			if(result.first()) {
-				Date intro = result.getDate("introduced");
+				Date introduced = result.getDate("introduced");
 				LocalDate convDate = null;
-				if(intro !=null) {
-					convDate = intro.toLocalDate();
+				if(introduced !=null) {
+					convDate = introduced.toLocalDate();
 				}
-				Date disco = result.getDate("discontinued");
+				Date discontinued = result.getDate("discontinued");
 				LocalDate convDate1 = null;
-				if(disco != null) {
-					convDate1 = disco.toLocalDate();
+				if(discontinued != null) {
+					convDate1 = discontinued.toLocalDate();
 				}
 				tmp = new Computer(
 						result.getInt("id"),

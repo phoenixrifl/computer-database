@@ -17,8 +17,8 @@ public class ComputerService {
 		this.mappeur = new Mappeur();
 	}
 	
-	public boolean createDTO(String comp) {
-		String [] computer = comp.split(",");
+	public boolean createDTO(String computer_dto) {
+		String [] computer = computer_dto.split(",");
 		return create(new ComputerDTO
 				(computer[0],
 				computer[1],
@@ -27,16 +27,27 @@ public class ComputerService {
 				));
 	}
 	
-	public boolean create(ComputerDTO comp) {
-		return this.computerDAO.create(this.mappeur.DTOToModel(comp));
+	public boolean createDTOWithId(int id, String computer_dto) {
+		String [] computer = computer_dto.split(",");
+		return update(new ComputerDTO
+				(String.valueOf(id),
+				computer[0],
+				computer[1],
+				computer[2],
+				computer[3]
+				));
+	}
+	
+	public boolean create(ComputerDTO computer) {
+		return this.computerDAO.create(this.mappeur.DTOToModel(computer));
 	}
 	
 	public boolean delete(int id) {
 		return this.computerDAO.delete(this.mappeur.DTOToModel(findOne(id)));
 	}
 	
-	public boolean update(ComputerDTO comp) {
-		return this.computerDAO.update(this.mappeur.DTOToModel(comp));
+	public boolean update(ComputerDTO computer) {
+		return this.computerDAO.update(this.mappeur.DTOToModel(computer));
 	}
 	
 	public ComputerDTO findOne(int id) {
@@ -45,8 +56,8 @@ public class ComputerService {
 	}
 	
 	public ArrayList<ComputerDTO> findAll(){
-		ArrayList<Computer> comp = this.computerDAO.findAll();
-		return this.mappeur.ModelToDTO(comp);
+		ArrayList<Computer> computer = this.computerDAO.findAll();
+		return this.mappeur.ModelToDTO(computer);
 		
 	}
 	

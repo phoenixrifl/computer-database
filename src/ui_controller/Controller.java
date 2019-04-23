@@ -26,7 +26,9 @@ public class Controller {
 					computerService.createDTO(computer);
 					break;
 				case 5:
-					computerService.update(null);
+					id = Ui.demandeId();
+					computer = Ui.demandeCreate();
+					computerService.createDTOWithId(id,computer);
 					break;
 				case 6:
 					int idDelete = Ui.demandeDelete();
