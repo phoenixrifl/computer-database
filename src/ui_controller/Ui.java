@@ -54,6 +54,14 @@ public class Ui {
 		return input;
 	}
 	
+	public static int choixPage() {
+		System.out.println("1/ <--");
+		System.out.println("2/ -->");
+		System.out.println("3/ fin");
+		
+		return sc.nextInt();
+	}
+	
 	
 	
 	public static void afficher(Object obj) {

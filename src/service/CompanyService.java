@@ -23,4 +23,9 @@ public class CompanyService {
 		return this.mappeur.ModelToDTO_(company);
 		
 	}
+
+	public ArrayList<CompanyDTO> findAll(int limits, int offset) {
+		ArrayList<Company> companies = this.companyDAO.findAll(limits, offset);
+		return this.mappeur.ModelToDTO_(companies);
+	}
 }

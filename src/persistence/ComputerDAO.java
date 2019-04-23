@@ -8,7 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import modele.Company;
 import modele.Computer;
 
 public class ComputerDAO extends DAO<Computer> {
@@ -18,6 +21,7 @@ public class ComputerDAO extends DAO<Computer> {
 	private final String SQL_SELECT = "SELECT * FROM computer";
 	private final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
 	private final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
+	private static final String SQL_PAGE = "SELECT * FROM computer ORDER BY id LIMIT ? OFFSET ?";
 	
 	public ComputerDAO(Connection conn) {
 		super(conn);
@@ -136,6 +140,43 @@ public class ComputerDAO extends DAO<Computer> {
 			e.printStackTrace();
 		}
 		return tmp;
+	}
+
+	public ArrayList<Computer> findAll(int limits, int offset) {
+		ArrayList<Computer> computers = new ArrayList<Computer>();
+		Computer tmp = null;
+
+		try {
+			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_PAGE);
+			preparedStatement.setLong(1, limits);
+			preparedStatement.setLong(2, offset);
+			ResultSet result = preparedStatement.executeQuery();
+			while(result.next()) {
+				Date introduced = result.getDate("introduced");
+				LocalDate convDate = null;
+				if(introduced !=null) {
+					convDate = introduced.toLocalDate();
+				}
+				Date discontinued = result.getDate("discontinued");
+				LocalDate convDate1 = null;
+				if(discontinued != null) {
+					convDate1 = discontinued.toLocalDate();
+				}
+				tmp = new Computer(
+						result.getInt("id"),
+						result.getString("name"),
+						convDate,
+						convDate1,
+						result.getInt("company_id"));
+				computers.add(tmp);
+			
+				
+			}
+		}catch(SQLException ex) {
+			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
+			
+		}
+		return computers;
 	}
 	
 	
