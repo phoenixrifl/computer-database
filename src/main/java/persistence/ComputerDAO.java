@@ -1,4 +1,4 @@
-package persistence;
+package main.java.persistence;
 
 
 import java.sql.Connection;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import modele.Company;
-import modele.Computer;
+import main.java.modele.Company;
+import main.java.modele.Computer;
 
 public class ComputerDAO extends DAO<Computer> {
 	

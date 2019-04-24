@@ -1,4 +1,4 @@
-package modele;
+package main.java.modele;
 
 public class Company {
 	private int id_;

@@ -1,11 +1,11 @@
-package service;
+package main.java.service;
 
 import java.util.ArrayList;
 
-import dto.CompanyDTO;
-import dto.Mappeur;
-import modele.Company;
-import persistence.CompanyDAO;
+import main.java.dto.CompanyDTO;
+import main.java.dto.Mappeur;
+import main.java.modele.Company;
+import main.java.persistence.CompanyDAO;
 
 
 public class CompanyService {

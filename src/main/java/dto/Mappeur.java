@@ -1,10 +1,10 @@
-package dto;
+package main.java.dto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import modele.Company;
-import modele.Computer;
+import main.java.modele.Company;
+import main.java.modele.Computer;
 
 public class Mappeur {
 	

@@ -1,11 +1,11 @@
-package service;
+package main.java.service;
 
 import java.util.ArrayList;
 
-import dto.ComputerDTO;
-import dto.Mappeur;
-import modele.Computer;
-import persistence.ComputerDAO;
+import main.java.dto.ComputerDTO;
+import main.java.dto.Mappeur;
+import main.java.modele.Computer;
+import main.java.persistence.ComputerDAO;
 
 public class ComputerService {
 	

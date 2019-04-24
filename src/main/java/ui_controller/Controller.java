@@ -1,11 +1,11 @@
-package ui_controller;
+package main.java.ui_controller;
 import java.util.ArrayList;
 
-import dto.CompanyDTO;
-import dto.ComputerDTO;
-import exception.NotOneTwoNumber;
-import service.CompanyService;
-import service.ComputerService;
+import main.java.dto.CompanyDTO;
+import main.java.dto.ComputerDTO;
+import main.java.exception.NotOneTwoNumber;
+import main.java.service.CompanyService;
+import main.java.service.ComputerService;
 public class Controller {
 
 	CompanyService companyService = new CompanyService();

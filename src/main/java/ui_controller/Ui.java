@@ -1,4 +1,4 @@
-package ui_controller;
+package main.java.ui_controller;
 
 import java.util.Scanner;
 
