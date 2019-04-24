@@ -8,6 +8,18 @@ import main.java.modele.Computer;
 
 public class Mappeur {
 	
+	private static Mappeur instance = null;
+	
+	private Mappeur() {
+		
+	}
+	
+	public final static Mappeur getInstance() {
+		if(Mappeur.instance == null) {
+			instance = new Mappeur();
+		}
+		return instance;
+	}
 	public ComputerDTO ModelToDTO(Computer computer) {
 		return new ComputerDTO(
 				String.valueOf(computer.getId_()), 

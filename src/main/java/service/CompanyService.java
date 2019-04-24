@@ -6,6 +6,7 @@ import main.java.dto.CompanyDTO;
 import main.java.dto.Mappeur;
 import main.java.modele.Company;
 import main.java.persistence.CompanyDAO;
+import main.java.persistence.ComputerDAO;
 
 
 public class CompanyService {
@@ -13,9 +14,18 @@ public class CompanyService {
 	private CompanyDAO companyDAO;
 	private Mappeur mappeur;
 	
-	public CompanyService() {
+	private static CompanyService instance = null;
+	
+	private CompanyService() {
 		this.companyDAO = new CompanyDAO();
-		this.mappeur = new Mappeur();
+		this.mappeur = Mappeur.getInstance();
+	}
+	
+	public final static CompanyService getInstance() {
+		if(CompanyService.instance == null) {
+			instance = new CompanyService();
+		}
+		return instance;
 	}
 	
 	public ArrayList<CompanyDTO> findAll(){

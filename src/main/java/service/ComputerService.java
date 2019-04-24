@@ -12,9 +12,18 @@ public class ComputerService {
 	private ComputerDAO computerDAO;
 	private Mappeur mappeur;
 	
-	public ComputerService() {
+	private static ComputerService instance = null;
+	
+	private ComputerService() {
 		this.computerDAO = new ComputerDAO();
-		this.mappeur = new Mappeur();
+		this.mappeur = Mappeur.getInstance();
+	}
+	
+	public final static ComputerService getInstance() {
+		if(ComputerService.instance == null) {
+			instance = new ComputerService();
+		}
+		return instance;
 	}
 	
 	public boolean createDTO(String computer_dto) {

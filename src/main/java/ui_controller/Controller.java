@@ -7,9 +7,25 @@ import main.java.exception.NotOneTwoNumber;
 import main.java.service.CompanyService;
 import main.java.service.ComputerService;
 public class Controller {
+	
 
-	CompanyService companyService = new CompanyService();
-	ComputerService computerService = new ComputerService();
+	private CompanyService companyService;
+	private ComputerService computerService;
+	
+	private static Controller instance = null;
+	
+	private Controller() {
+		this.companyService = CompanyService.getInstance();
+		this.computerService = ComputerService.getInstance();
+		
+	}
+	
+	public final static Controller getInstance() {
+		if(Controller.instance == null) {
+			instance = new Controller();
+		}
+		return instance;
+	}
 	
 	public void action() throws NotOneTwoNumber {
 		boolean play = true;
