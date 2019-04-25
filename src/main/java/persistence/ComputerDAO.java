@@ -45,8 +45,8 @@ public class ComputerDAO extends DAO<Computer> {
 			
 			preparedStatement.executeUpdate();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		
 		return false;
@@ -58,8 +58,8 @@ public class ComputerDAO extends DAO<Computer> {
 		try {
 			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_DELETE+obj.getId_()+";");
 			preparedStatement.executeUpdate();
-		}catch(SQLException e) {
-			e.printStackTrace();
+		}catch(SQLException ex) {
+			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return true;
 	}
@@ -73,8 +73,8 @@ public class ComputerDAO extends DAO<Computer> {
 			preparedStatement.setObject(3, obj.getDiscontinued());
 			preparedStatement.setObject(4, obj.getCompany_id());
 			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return true;
 	}
@@ -105,8 +105,8 @@ public class ComputerDAO extends DAO<Computer> {
 					computer_list.add(tmp);
 				}
 		
-		}catch(Exception e) {
-			e.printStackTrace();
+		}catch(SQLException ex) {
+			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return computer_list;
 	}
@@ -136,8 +136,8 @@ public class ComputerDAO extends DAO<Computer> {
 						result.getInt("company_id"));
 				
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return tmp;
 	}
