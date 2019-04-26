@@ -15,7 +15,7 @@ public class ComputerService {
 	private static ComputerService instance = null;
 	
 	private ComputerService() {
-		this.computerDAO = new ComputerDAO();
+		this.computerDAO = ComputerDAO.getInstance();
 		this.mappeur = Mappeur.getInstance();
 	}
 	

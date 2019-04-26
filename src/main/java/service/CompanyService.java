@@ -17,7 +17,7 @@ public class CompanyService {
 	private static CompanyService instance = null;
 	
 	private CompanyService() {
-		this.companyDAO = new CompanyDAO();
+		this.companyDAO = CompanyDAO.getInstance();
 		this.mappeur = Mappeur.getInstance();
 	}
 	

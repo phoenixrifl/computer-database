@@ -12,13 +12,21 @@ public class CompanyDAO extends DAO<Company>{
 	
 	private static final String SQL_PAGE = "SELECT * FROM company ORDER BY id LIMIT ? OFFSET ?";
 
+	private static CompanyDAO instance = null;
 	
-	public CompanyDAO(Connection conn) {
+	private CompanyDAO(Connection conn) {
 		super(conn);
 	}
 	
-	public CompanyDAO() {
+	private CompanyDAO() {
 		super();
+	}
+	
+	public final static CompanyDAO getInstance() {
+		if(CompanyDAO.instance == null) {
+			instance = new CompanyDAO();
+		}
+		return instance;
 	}
 
 	@Override

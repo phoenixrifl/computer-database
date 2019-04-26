@@ -23,13 +23,23 @@ public class ComputerDAO extends DAO<Computer> {
 	private final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
 	private static final String SQL_PAGE = "SELECT * FROM computer ORDER BY id LIMIT ? OFFSET ?";
 	
-	public ComputerDAO(Connection conn) {
+	private static ComputerDAO instance = null;
+	
+	private ComputerDAO(Connection conn) {
 		super(conn);
 	}
 	
-	public ComputerDAO() {
+	private ComputerDAO() {
 		super();
 	}
+	
+	public final static ComputerDAO getInstance() {
+		if(ComputerDAO.instance == null) {
+			instance = new ComputerDAO();
+		}
+		return instance;
+	}
+	
 	
 
 	@Override

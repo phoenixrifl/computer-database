@@ -13,7 +13,7 @@ public class MappeurTest {
 	private static Mappeur mappeur;
 	
 	@Before
-	public static void setUpBefore() {
+	public void setUpBefore() {
 		mappeur = Mappeur.getInstance();
 	}
 	
