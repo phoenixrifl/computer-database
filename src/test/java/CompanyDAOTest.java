@@ -10,12 +10,14 @@ public class CompanyDAOTest {
 	private CompanyDAO companyDAO;
 	
 	@Before
-	public void setUpBefore() {
+	public void setUp() {
 		companyDAO = CompanyDAO.getInstance();
 	}
 	
 	@Test
 	public void TestFindAll() {
-		companyDAO.findAll();
+		companyDAO.findAll(1,10);
 	}
+	
+
 }

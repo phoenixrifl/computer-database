@@ -3,34 +3,48 @@ package main.java.persistence;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import main.java.modele.Company;
 import main.java.modele.Computer;
 
-public class ComputerDAO extends DAO<Computer> {
+public class ComputerDAO{
 	
 	private final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
 	private final String SQL_DELETE = "DELETE FROM computer WHERE id= ";
-	private final String SQL_SELECT = "SELECT * FROM computer";
 	private final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
 	private final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
 	private static final String SQL_PAGE = "SELECT * FROM computer ORDER BY id LIMIT ? OFFSET ?";
 	
 	private static ComputerDAO instance = null;
+	protected Connection connect = null;
+
 	
-	private ComputerDAO(Connection conn) {
-		super(conn);
-	}
+	private static Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
+	
 	
 	private ComputerDAO() {
-		super();
+		if(this.connect == null) {
+			
+			try {
+				this.connect = DriverManager.getConnection(
+							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC",
+							 "admincdb",
+							 "qwerty1234");
+				
+				
+				} catch (SQLException e) {
+					logger.info("connexion impossible");
+				}
+				
+			
+		}
 	}
 	
 	public final static ComputerDAO getInstance() {
@@ -42,91 +56,56 @@ public class ComputerDAO extends DAO<Computer> {
 	
 	
 
-	@Override
 	public boolean create(Computer obj) {
 
 		
-		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_INSERT);
+		try(PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_INSERT)) {
 			preparedStatement.setObject(1, obj.getName());
 			preparedStatement.setObject(2, obj.getIntroduced());
 			preparedStatement.setObject(3, obj.getDiscontinued());
 			preparedStatement.setObject(4, obj.getCompany_id());
 			
 			preparedStatement.executeUpdate();
+			return true;
 
 		} catch (SQLException ex) {
-			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
+			logger.error("impossible de créer cet ordinateur");
 		}
-		
 		return false;
 	}
 
-	@Override
 	public boolean delete(Computer obj) {
 		
-		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_DELETE+obj.getId_()+";");
+		try(PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_DELETE+obj.getId_()+";")) {
+			
 			preparedStatement.executeUpdate();
+			return true;
 		}catch(SQLException ex) {
-			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
+			logger.error("suppression impossible de l'ordinateur d'id"+obj.getId_());
 		}
-		return true;
+		return false;
 	}
 
-	@Override
+	
 	public boolean update(Computer obj) {
-		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_UPDATE+obj.getId_()+";");
+		try(PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_UPDATE+obj.getId_()+";")) {
 			preparedStatement.setObject(1, obj.getName());
 			preparedStatement.setObject(2, obj.getIntroduced());
 			preparedStatement.setObject(3, obj.getDiscontinued());
 			preparedStatement.setObject(4, obj.getCompany_id());
 			preparedStatement.executeUpdate();
+			return true;
 		} catch (SQLException ex) {
-			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
+			logger.error("update impossible");
 		}
-		return true;
+		return false;
 	}
-	
-	public ArrayList<Computer> findAll(){
-		ArrayList<Computer> computer_list = new ArrayList<Computer>();
-		Computer tmp = null;
-		try {
-			ResultSet result = this.connect.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT);
-			while(result.next()) {
-					Date introduced = result.getDate("introduced");
-					LocalDate convDate = null;
-					if(introduced !=null) {
-						convDate = introduced.toLocalDate();
-					}
-					Date discontinued = result.getDate("discontinued");
-					LocalDate convDate1 = null;
-					if(discontinued != null) {
-						convDate1 = discontinued.toLocalDate();
-					}
-					tmp = new Computer(
-							result.getInt("id"),
-							result.getString("name"),
-							convDate,
-							convDate1,
-							result.getInt("company_id"));
-					computer_list.add(tmp);
-				}
 		
-		}catch(SQLException ex) {
-			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		return computer_list;
-	}
-
-	@Override
 	public Computer find(int id) {
 		Computer tmp = null;
-		try {
-			ResultSet result = this.connect.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT_ONE+id);
+		try(ResultSet result = this.connect.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT_ONE+id)) {
+			
 			if(result.first()) {
 				Date introduced = result.getDate("introduced");
 				LocalDate convDate = null;
@@ -147,7 +126,7 @@ public class ComputerDAO extends DAO<Computer> {
 				
 			}
 		} catch (SQLException ex) {
-			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
+			logger.error("Ordinateur "+id+" introuvable ");
 		}
 		return tmp;
 	}
@@ -156,8 +135,8 @@ public class ComputerDAO extends DAO<Computer> {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer tmp = null;
 
-		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_PAGE);
+		try(PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_PAGE)) {
+			
 			preparedStatement.setLong(1, limits);
 			preparedStatement.setLong(2, offset);
 			ResultSet result = preparedStatement.executeQuery();
@@ -183,8 +162,7 @@ public class ComputerDAO extends DAO<Computer> {
 				
 			}
 		}catch(SQLException ex) {
-			Logger.getLogger(Company.class.getName()).log(Level.SEVERE, null, ex);
-			
+			logger.error("Echec liste d'ordinateurs");
 		}
 		return computers;
 	}

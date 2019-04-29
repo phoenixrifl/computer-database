@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 import main.java.dto.CompanyDTO;
 import main.java.dto.ComputerDTO;
-import main.java.exception.NotOneTwoNumber;
 import main.java.service.CompanyService;
 import main.java.service.ComputerService;
 public class Controller {
@@ -27,7 +26,7 @@ public class Controller {
 		return instance;
 	}
 	
-	public void action() throws NotOneTwoNumber {
+	public void action() {
 		boolean play = true;
 		while(play) {
 			int choix = Ui.demande();
@@ -63,7 +62,7 @@ public class Controller {
 		}
 	}
 	
-	private void pagination(int computer_or_company) throws NotOneTwoNumber {
+	private void pagination(int computer_or_company){
 		boolean next_page = false;
 		int n = 1;
 		while(!next_page) {
@@ -75,7 +74,6 @@ public class Controller {
 				ArrayList<CompanyDTO> companies = companyService.findAll(10,n);
 				companies.forEach(System.out::println);
 			}
-			else throw new NotOneTwoNumber();
 			int choix = Ui.choixPage();
 			switch(choix) {
 				case 1:
