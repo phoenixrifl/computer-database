@@ -16,11 +16,12 @@ import main.java.modele.Computer;
 
 public class ComputerDAO{
 	
-	private final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
-	private final String SQL_DELETE = "DELETE FROM computer WHERE id= ";
-	private final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
-	private final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
-	private static final String SQL_PAGE = "SELECT * FROM computer ORDER BY id LIMIT ? OFFSET ?";
+	private static final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
+	private static final String SQL_DELETE = "DELETE FROM computer WHERE id= ";
+	private static final String SQL_SELECT_ONE = "SELECT * FROM computer WHERE id = ";
+	private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
+	private static final String SQL_PAGE = "SELECT * FROM computer ORDER BY computer.id LIMIT ? OFFSET ?";
+	private static final String SQL_SELECT= "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
 	
 	private static ComputerDAO instance = null;
 	protected Connection connect = null;
@@ -31,15 +32,21 @@ public class ComputerDAO{
 	
 	private ComputerDAO() {
 		if(this.connect == null) {
-			
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			try {
 				this.connect = DriverManager.getConnection(
-							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC",
+							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
 							 "admincdb",
 							 "qwerty1234");
 				
 				
 				} catch (SQLException e) {
+					e.printStackTrace();
 					logger.info("connexion impossible");
 				}
 				
@@ -129,6 +136,38 @@ public class ComputerDAO{
 			logger.error("Ordinateur "+id+" introuvable ");
 		}
 		return tmp;
+	}
+	public ArrayList<Computer> findAll() {
+		ArrayList<Computer> computers = new ArrayList<Computer>();
+
+		try(
+			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_SELECT)
+		) {
+			ResultSet result = preparedStatement.executeQuery();
+			while(result.next()) {
+				Date introduced = result.getDate("introduced");
+				LocalDate convDate = null;
+				if(introduced !=null) {
+					convDate = introduced.toLocalDate();
+				}
+				Date discontinued = result.getDate("discontinued");
+				LocalDate convDate1 = null;
+				if(discontinued != null) {
+					convDate1 = discontinued.toLocalDate();
+				}
+				Computer tmp = new Computer(
+						result.getInt("computer.id"),
+						result.getString("computer.name"),
+						convDate,
+						convDate1,
+						result.getInt("company_id"));
+				computers.add(tmp);				
+			}
+		}catch(SQLException ex) {
+			ex.printStackTrace();
+			logger.error("Echec liste d'ordinateurs");
+		}
+		return computers;
 	}
 
 	public ArrayList<Computer> findAll(int limits, int offset) {
