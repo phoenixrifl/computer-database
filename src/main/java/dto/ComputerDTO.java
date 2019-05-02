@@ -1,5 +1,7 @@
 package main.java.dto;
 
+import java.util.Optional;
+
 public class ComputerDTO {
 	private String id;
 	private String name;
@@ -39,14 +41,14 @@ public class ComputerDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getIntroduced() {
-		return introduced;
+	public Optional<String> getIntroduced() {
+		return Optional.ofNullable(this.introduced);
 	}
 	public void setIntroduced(String introduced) {
 		this.introduced = introduced;
 	}
-	public String getDiscontinued() {
-		return discontinued;
+	public Optional<String> getDiscontinued() {
+		return Optional.ofNullable(this.introduced);
 	}
 	public void setDiscontinued(String discontinued) {
 		this.discontinued = discontinued;

@@ -6,17 +6,20 @@ import main.java.dto.ComputerDTO;
 import main.java.dto.Mappeur;
 import main.java.modele.Computer;
 import main.java.persistence.ComputerDAO;
+import main.java.validator.DateValidator;
 
 public class ComputerService {
 	
 	private ComputerDAO computerDAO;
 	private Mappeur mappeur;
+	private DateValidator dateValidator;
 	
 	private static ComputerService instance = null;
 	
 	private ComputerService() {
 		this.computerDAO = ComputerDAO.getInstance();
 		this.mappeur = Mappeur.getInstance();
+		this.dateValidator = DateValidator.getInstance();
 	}
 	
 	public final static ComputerService getInstance() {
@@ -47,8 +50,13 @@ public class ComputerService {
 				));
 	}
 	
-	public boolean create(ComputerDTO computer) {
-		return this.computerDAO.create(this.mappeur.DTOToModel(computer));
+	public boolean create(ComputerDTO computerDto) {
+		Computer computer = this.mappeur.DTOToModel(computerDto);
+//		if(!dateValidator.dateIsValid(computer)) {
+//			
+//			
+//		}
+		return this.computerDAO.create(computer);
 	}
 	
 	public boolean delete(int id) {
