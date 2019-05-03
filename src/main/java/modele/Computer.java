@@ -1,7 +1,6 @@
 package main.java.modele;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 public class Computer {
 
@@ -30,16 +29,16 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Optional <LocalDate> getIntroduced() {
-		return Optional.ofNullable(this.introduced);
+	public LocalDate getIntroduced() {
+		return this.introduced;
 	}
 
 	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
 
-	public Optional <LocalDate> getDiscontinued() {
-		return Optional.ofNullable(this.discontinued);
+	public LocalDate getDiscontinued() {
+		return this.discontinued;
 	}
 
 	public void setDiscontinued(LocalDate discontinued) {

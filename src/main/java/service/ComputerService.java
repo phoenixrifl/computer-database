@@ -52,11 +52,10 @@ public class ComputerService {
 	
 	public boolean create(ComputerDTO computerDto) {
 		Computer computer = this.mappeur.DTOToModel(computerDto);
-//		if(!dateValidator.dateIsValid(computer)) {
-//			
-//			
-//		}
-		return this.computerDAO.create(computer);
+		if(dateValidator.dateIsValid(computer)) {
+			this.computerDAO.create(computer);
+		}
+		return true;
 	}
 	
 	public boolean delete(int id) {
