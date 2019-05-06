@@ -15,6 +15,8 @@ import main.java.modele.Company;
 public class CompanyDAO {
 	
 	private static final String SQL_PAGE = "SELECT * FROM company ORDER BY id LIMIT ? OFFSET ?";
+	private static final String SQL_SELECT= "SELECT * FROM company";
+
 
 	private static CompanyDAO instance = null;
 	
@@ -66,6 +68,26 @@ public class CompanyDAO {
 			
 		}catch(SQLException e) {
 			logger.error("pagination impossible");
+		}
+		return company_list;
+	}
+	
+	public ArrayList<Company> findAll() {
+		ArrayList<Company> company_list = new ArrayList<Company>();
+		Company tmp = null;
+		try(PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_SELECT)) {
+			
+			ResultSet result = preparedStatement.executeQuery();
+			
+			while(result.next()) {
+				tmp = new Company(
+						result.getInt("id"),
+						result.getString("name"));
+				company_list.add(tmp);
+			}
+			
+		}catch(SQLException e) {
+			logger.error("liste compagnie impossible");
 		}
 		return company_list;
 	}

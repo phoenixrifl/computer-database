@@ -6,7 +6,6 @@ import main.java.dto.CompanyDTO;
 import main.java.dto.Mappeur;
 import main.java.modele.Company;
 import main.java.persistence.CompanyDAO;
-import main.java.persistence.ComputerDAO;
 
 
 public class CompanyService {
@@ -33,4 +32,9 @@ public class CompanyService {
 		ArrayList<Company> companies = this.companyDAO.findAll(limits, offset);
 		return this.mappeur.ModelToDTO_(companies);
 	}
+	
+	public ArrayList<CompanyDTO> findAll() {
+		ArrayList<Company> companies = this.companyDAO.findAll();
+		return this.mappeur.ModelToDTO_(companies);
+	} 
 }
