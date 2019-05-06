@@ -16,7 +16,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.jsp"> Application -
+			<a class="navbar-brand" href="dashboard"> Application -
 				Computer Database </a>
 		</div>
 	</header>
@@ -35,7 +35,7 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer.jsp">Add
+					<a class="btn btn-success" id="addComputer" href="addComputer">Add
 						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
 						onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
@@ -79,7 +79,7 @@
 							<td><a href="editComputer.jsp" onclick="">${computer_carac.getName()}</a></td>
 							<td>${computer_carac.getIntroduced()}</td>
 							<td>${computer_carac.getDiscontinued()}</td>
-							<td>${computer_carac.getName()}</td>
+							<td>${computer_carac.getCompany_id()}</td>
 							</tr>
 					</c:forEach>				
 
@@ -91,23 +91,22 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="#" aria-label="Previous"> <span
+				<li><a href="dashboard?page=${page-1}&PCparPage=${limit}" aria-label="Previous"> <span
 						aria-hidden="true">&laquo;</span>
 				</a></li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				<c:forEach begin ="${begin}" end="${end}" varStatus="loop">
+					<li><a href="dashboard?page=${loop.index}&limit=${limit}">${loop.index}</a></li>
+				</c:forEach>
+				<li><a href="dashboard?page=${page+1}&PCparPage=${limit}" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<button type="button" class="btn btn-default">10</button>
-				<button type="button" class="btn btn-default">50</button>
-				<button type="button" class="btn btn-default">100</button>
+				<a href="dashboard?page=1&limit=10" class="btn btn-default">10</a>
+				<a href="dashboard?page=1&limit=50" class="btn btn-default">50</a>
+				<a href="dashboard?page=1&limit=100" class="btn btn-default">100</a>
 			</div>
+		</div>
 	</footer>
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>

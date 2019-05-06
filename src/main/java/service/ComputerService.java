@@ -71,6 +71,10 @@ public class ComputerService {
 		return this.mappeur.ModelToDTO(computer);
 	}
 	
+	public int count() {
+		return this.computerDAO.count();
+	}
+	
 	public ArrayList<ComputerDTO> findAll(){
 		ArrayList<Computer> computer = this.computerDAO.findAll();
 		return this.mappeur.ModelToDTO(computer);

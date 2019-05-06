@@ -22,6 +22,8 @@ public class ComputerDAO{
 	private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
 	private static final String SQL_PAGE = "SELECT * FROM computer ORDER BY computer.id LIMIT ? OFFSET ?";
 	private static final String SQL_SELECT= "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
+	private static final String SQL_COUNT = "SELECT COUNT(*) AS total FROM computer";
+	
 	
 	private static ComputerDAO instance = null;
 	protected Connection connect = null;
@@ -60,7 +62,6 @@ public class ComputerDAO{
 		}
 		return instance;
 	}
-	
 	
 
 	public boolean create(Computer obj) {
@@ -137,6 +138,20 @@ public class ComputerDAO{
 		}
 		return tmp;
 	}
+	
+	public int count() {
+		int computerMax = 0;
+		try(ResultSet resultSet = this.connect.createStatement().executeQuery(SQL_COUNT)){
+			if(resultSet.first()) {
+				computerMax = resultSet.getInt("total");
+			}
+		}catch(SQLException ex) {
+			ex.printStackTrace();
+			logger.error("echec count");
+		}
+		return computerMax;
+	}
+	
 	public ArrayList<Computer> findAll() {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 

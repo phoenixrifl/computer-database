@@ -3,6 +3,7 @@
   <welcome-file-list>
     <welcome-file>dashboard</welcome-file>
   </welcome-file-list>
+  
   <error-page>
     <error-code>403</error-code>
     <location>/WebContent/static/views/403.html</location>
