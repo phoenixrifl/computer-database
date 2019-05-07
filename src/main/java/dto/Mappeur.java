@@ -3,13 +3,18 @@ package main.java.dto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import main.java.exception.DateFormatException;
 import main.java.modele.Company;
 import main.java.modele.Computer;
 
 public class Mappeur {
 	
 	private static Mappeur instance = null;
-	
+	private static Logger logger = LoggerFactory.getLogger(Mappeur.class);
+
 	private Mappeur() {
 		
 	}
@@ -32,11 +37,19 @@ public class Mappeur {
 	public Computer DTOToModel(ComputerDTO computerDto) {
 		LocalDate convIntro = null;
 		LocalDate convDisco = null;
-		if(!computerDto.getIntroduced().equals("null")) 
-			convIntro = LocalDate.parse(computerDto.getIntroduced());
+
+		try {
+			if(!computerDto.getIntroduced().equals("null")) {
+				convIntro = LocalDate.parse(computerDto.getIntroduced());
+			}
 		
-		if(!computerDto.getDiscontinued().equals("null"))
-			convDisco = LocalDate.parse(computerDto.getDiscontinued());
+			if(!computerDto.getDiscontinued().equals("null")) {
+				convDisco = LocalDate.parse(computerDto.getDiscontinued());
+
+			}
+		}catch(Exception e) {
+			logger.error("erreur format date", new DateFormatException());
+		}
 		
 		return new Computer(
 				Integer.parseInt(computerDto.getId()),

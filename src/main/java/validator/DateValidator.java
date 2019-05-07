@@ -29,7 +29,7 @@ public class DateValidator {
 			isValid = false;
 		}
 		else {
-			 if(!introduced.isAfter(discontinued)) {
+			 if(introduced.isAfter(discontinued)) {
 				 logger.error("date de début trop grand par rapport à date de fin" , new Exception());
 				 isValid = false;
 			 }

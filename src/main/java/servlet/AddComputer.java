@@ -36,34 +36,39 @@ public class AddComputer extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/addComputer.jsp");
-		requestDispatcher.forward(request, response);
-	}
+		ArrayList<CompanyDTO> companyDTO_list = companyService.findAll();
+		request.setAttribute("listCompany", companyDTO_list);
+		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
+		rd.forward(request, response);	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-				
 		String name = "", dateIntroduced = "", dateDiscontinued = "", idCompanie = "";
 		if(request.getParameter("computerName")!=null)
+			
 			 name = request.getParameter("computerName");
+			
 		
-		if(request.getParameter("introduced")!=null) 
-			dateIntroduced = String.valueOf(request.getParameter("introduced"));
+		if(request.getParameter("introduced")!=null && request.getParameter("introduced")!="")
+			dateIntroduced = request.getParameter("introduced");
 		
-		if(request.getParameter("discontinued")!=null)
-			dateDiscontinued = String.valueOf(request.getParameter("discontinued"));
+		if(request.getParameter("discontinued")!=null && request.getParameter("discontinued")!="")
+			dateDiscontinued = request.getParameter("discontinued");
 		
 		if(request.getParameter("companyId")!=null)
 			idCompanie = request.getParameter("companyId");
 		
-		ComputerDTO computerDTO = new ComputerDTO(name, dateIntroduced, dateDiscontinued, idCompanie);
-		computerService.create(computerDTO);
+		
 		ArrayList<CompanyDTO> companyDTO_list = companyService.findAll();
 		request.setAttribute("listCompany", companyDTO_list);
-		
+		ComputerDTO computerDTO = new ComputerDTO(name, dateIntroduced, dateDiscontinued, idCompanie);
+
+		computerService.create(computerDTO);
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
 		rd.forward(request, response);
 		

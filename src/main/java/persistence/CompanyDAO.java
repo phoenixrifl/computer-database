@@ -20,27 +20,31 @@ public class CompanyDAO {
 
 	private static CompanyDAO instance = null;
 	
-	protected Connection connect = null;
+//	protected Connection connect = null;
 	
 	private static Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 
 	
 	private CompanyDAO() {
-		if(this.connect == null) {
-			
-			try {
-				this.connect = DriverManager.getConnection(
-							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC",
-							 "admincdb",
-							 "qwerty1234");
-				
-				
-				} catch (SQLException e) {
-					logger.info("connexion impossible");
-				}
-				
-			
-		}
+		try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+//			try {
+//				this.connect = DriverManager.getConnection(
+//							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC",
+//							 "admincdb",
+//							 "qwerty1234");
+//				
+//				
+//				} catch (SQLException e) {
+//					logger.error("connexion impossible à la DB compagnie");
+//				}
+//				
+//			
+//		}
 	}
 	
 	public final static CompanyDAO getInstance() {
@@ -53,8 +57,11 @@ public class CompanyDAO {
 	public ArrayList<Company> findAll(int limits, int offset) {
 		ArrayList<Company> company_list = new ArrayList<Company>();
 		Company tmp = null;
-		try {
-			PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_PAGE);
+		try(Connection connect = DriverManager.getConnection(
+				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
+				 "admincdb",
+				 "qwerty1234");PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE);) {
+			
 			preparedStatement.setLong(1, limits);
 			preparedStatement.setLong(2, offset);
 			ResultSet result = preparedStatement.executeQuery();
@@ -65,6 +72,7 @@ public class CompanyDAO {
 						result.getString("name"));
 				company_list.add(tmp);
 			}
+
 			
 		}catch(SQLException e) {
 			logger.error("pagination impossible");
@@ -75,7 +83,10 @@ public class CompanyDAO {
 	public ArrayList<Company> findAll() {
 		ArrayList<Company> company_list = new ArrayList<Company>();
 		Company tmp = null;
-		try(PreparedStatement preparedStatement = this.connect.prepareStatement(SQL_SELECT)) {
+		try(Connection connect = DriverManager.getConnection(
+				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
+				 "admincdb",
+				 "qwerty1234");PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT)) {
 			
 			ResultSet result = preparedStatement.executeQuery();
 			
@@ -85,7 +96,7 @@ public class CompanyDAO {
 						result.getString("name"));
 				company_list.add(tmp);
 			}
-			
+
 		}catch(SQLException e) {
 			logger.error("liste compagnie impossible");
 		}
