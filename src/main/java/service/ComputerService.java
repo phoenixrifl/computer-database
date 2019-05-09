@@ -64,8 +64,12 @@ public class ComputerService {
 		return this.computerDAO.delete(this.mappeur.DTOToModel(findOne(id)));
 	}
 	
-	public boolean update(ComputerDTO computer) {
-		return this.computerDAO.update(this.mappeur.DTOToModel(computer));
+	public boolean update(ComputerDTO computerDto) {
+		Computer computer = this.mappeur.DTOToModel(computerDto);
+		if(dateValidator.dateIsValid(computer)) {
+			this.computerDAO.update(computer);
+		}
+		return true;
 	}
 	
 	public ComputerDTO findOne(int id) {

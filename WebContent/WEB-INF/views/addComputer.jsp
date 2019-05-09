@@ -40,8 +40,8 @@
 								<input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date" pattern=(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}>
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
-									class="form-control" id="companyId" name="companyId">
+								<label for="companyId">Company</label> 
+								<select class="form-control" id="companyId" name="companyId">
 									<c:forEach items="${listCompany}" var="companies">
 
 										<option value="${companies.getId()}">${companies.getName()}</option>

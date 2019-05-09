@@ -3,7 +3,6 @@ package main.java.persistence;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +10,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import main.java.modele.Computer;
 
@@ -31,28 +33,12 @@ public class ComputerDAO{
 	
 	private static Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 	
+	private String config = "/home/excilys/computer-database/src/main/resources/hikari.properties";
+	private HikariConfig configHakari = new HikariConfig(config);
+	private HikariDataSource hikariDataSource = new HikariDataSource(configHakari);
+	
 	
 	private ComputerDAO() {
-			try {
-				Class.forName("com.mysql.jdbc.Driver");
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-//			try {
-//				this.connect = DriverManager.getConnection(
-//							 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-//							 "admincdb",
-//							 "qwerty1234");
-//				
-//				
-//				} catch (SQLException e) {
-//					e.printStackTrace();
-//					logger.error("connexion impossible", e.getClass());
-//				}
-//				
-//			
-//		}
 	}
 	
 	public final static ComputerDAO getInstance() {
@@ -66,10 +52,8 @@ public class ComputerDAO{
 	public boolean create(Computer obj) {
 
 		
-		try(Connection connect = DriverManager.getConnection(
-				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-				 "admincdb",
-				 "qwerty1234"); PreparedStatement preparedStatement = connect.prepareStatement(SQL_INSERT)) {
+		try(Connection connect = hikariDataSource.getConnection();
+				  PreparedStatement preparedStatement = connect.prepareStatement(SQL_INSERT)) {
 			preparedStatement.setObject(1, obj.getName());
 			preparedStatement.setObject(2, Date.valueOf(obj.getIntroduced()));
 			preparedStatement.setObject(3, Date.valueOf(obj.getDiscontinued()));
@@ -88,10 +72,7 @@ public class ComputerDAO{
 
 	public boolean delete(Computer obj) {
 		
-		try(Connection connect = DriverManager.getConnection(
-				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-				 "admincdb",
-				 "qwerty1234");PreparedStatement preparedStatement = connect.prepareStatement(SQL_DELETE+obj.getId_()+";")) {
+		try(Connection connect = hikariDataSource.getConnection();PreparedStatement preparedStatement = connect.prepareStatement(SQL_DELETE+obj.getId_()+";")) {
 			
 			preparedStatement.executeUpdate();
 			return true;
@@ -103,13 +84,10 @@ public class ComputerDAO{
 
 	
 	public boolean update(Computer obj) {
-		try(Connection connect = DriverManager.getConnection(
-				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-				 "admincdb",
-				 "qwerty1234");PreparedStatement preparedStatement = connect.prepareStatement(SQL_UPDATE+obj.getId_()+";")) {
+		try(Connection connect = hikariDataSource.getConnection();PreparedStatement preparedStatement = connect.prepareStatement(SQL_UPDATE+obj.getId_()+";")) {
 			preparedStatement.setObject(1, obj.getName());
-			preparedStatement.setObject(2, obj.getIntroduced());
-			preparedStatement.setObject(3, obj.getDiscontinued());
+			preparedStatement.setObject(2, Date.valueOf(obj.getIntroduced()));
+			preparedStatement.setObject(3, Date.valueOf(obj.getDiscontinued()));
 			preparedStatement.setObject(4, obj.getCompany_id());
 			preparedStatement.executeUpdate();
 			return true;
@@ -121,10 +99,7 @@ public class ComputerDAO{
 		
 	public Computer find(int id) {
 		Computer tmp = null;
-		try(Connection connect = DriverManager.getConnection(
-				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-				 "admincdb",
-				 "qwerty1234");ResultSet result = connect.createStatement(
+		try(Connection connect = hikariDataSource.getConnection();ResultSet result = connect.createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery(SQL_SELECT_ONE+id)) {
 			
 			if(result.first()) {
@@ -155,10 +130,7 @@ public class ComputerDAO{
 	
 	public int count() {
 		int computerMax = 0;
-		try(Connection connect = DriverManager.getConnection(
-				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-				 "admincdb",
-				 "qwerty1234"); ResultSet resultSet = connect.createStatement().executeQuery(SQL_COUNT)){
+		try(Connection connect = hikariDataSource.getConnection(); ResultSet resultSet = connect.createStatement().executeQuery(SQL_COUNT)){
 			if(resultSet.first()) {
 				computerMax = resultSet.getInt("total");
 			}
@@ -172,10 +144,7 @@ public class ComputerDAO{
 	public ArrayList<Computer> findAll() {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 
-		try(Connection connect = DriverManager.getConnection(
-				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-				 "admincdb",
-				 "qwerty1234");
+		try(Connection connect = hikariDataSource.getConnection();
 			PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT)
 		) {
 			ResultSet result = preparedStatement.executeQuery();
@@ -209,10 +178,7 @@ public class ComputerDAO{
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer tmp = null;
 
-		try(Connection connect = DriverManager.getConnection(
-				 "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull&serverTimezone=UTC",
-				 "admincdb",
-				 "qwerty1234");PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE)) {
+		try(Connection connect = hikariDataSource.getConnection();PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE)) {
 			
 			preparedStatement.setLong(1, limits);
 			preparedStatement.setLong(2, offset);
