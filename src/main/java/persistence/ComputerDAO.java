@@ -28,7 +28,6 @@ public class ComputerDAO{
 	
 	
 	private static ComputerDAO instance = null;
-//	protected Connection connect = null;
 
 	
 	private static Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
