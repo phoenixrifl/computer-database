@@ -37,7 +37,8 @@ public class ComputerService {
 				(computer[0],
 				computer[1],
 				computer[2],
-				computer[3]
+				computer[3],
+				computer[4]
 				));
 	}
 	
@@ -90,6 +91,11 @@ public class ComputerService {
 	public ArrayList<ComputerDTO> findAll(int limits, int offset){
 			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset);
 			return this.mappeur.ModelToDTO(computers);
+	}
+
+	public ArrayList<ComputerDTO> find(String search) {
+		
+		return null;
 	}
 	
 }

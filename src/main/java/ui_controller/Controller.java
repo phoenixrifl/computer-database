@@ -64,7 +64,7 @@ public class Controller {
 	
 	private void pagination(int computer_or_company){
 		boolean next_page = false;
-		int n = 1;
+		int n = 0;
 		while(!next_page) {
 			if(computer_or_company == 1) {
 				ArrayList<ComputerDTO> computers = computerService.findAll(10, n);

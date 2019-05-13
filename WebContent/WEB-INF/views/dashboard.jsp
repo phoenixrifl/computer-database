@@ -26,7 +26,7 @@
 			<h1 id="homeTitle">${taille} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="#" method="GET" class="form-inline">
+					<form id="searchForm" action="searchComputer" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name" /> <input
@@ -79,7 +79,7 @@
 							<td><a href="editComputer?id=${computer_carac.getId()}&computerName=${computer_carac.getName()}&introduced=${computer_carac.getIntroduced()}&discontinued=${computer_carac.getDiscontinued()}" onclick="">${computer_carac.getName()}</a></td>
 							<td>${computer_carac.getIntroduced()}</td>
 							<td>${computer_carac.getDiscontinued()}</td>
-							<td>${computer_carac.getCompany_id()}</td>
+							<td>${computer_carac.getCompany_name()}</td>
 							</tr>
 					</c:forEach>				
 

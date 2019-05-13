@@ -18,7 +18,7 @@ public class CompanyDAO {
 	
 	private static final String SQL_PAGE = "SELECT * FROM company ORDER BY id LIMIT ? OFFSET ?";
 	private static final String SQL_SELECT= "SELECT * FROM company";
-
+	private static final String SQL_SELECT_ONE_COMPANY = "SELECT id,name FROM company WHERE id =";
 
 	private static CompanyDAO instance = null;
 	
@@ -37,6 +37,25 @@ public class CompanyDAO {
 		}
 		return instance;
 	}
+	
+	public Company find(long id) {
+		Company tmp = null;
+		try(Connection connect = hikariDataSource.getConnection();PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT_ONE_COMPANY);) {
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				System.err.println(resultSet.getInt("id")+ " "+resultSet.getString("name"));
+				
+				tmp = new Company(resultSet.getInt("id"),
+						resultSet.getString("name"));
+			}
+		} catch (SQLException e) {
+			logger.error("impossible de trouver la compagnie recherchée");
+		}
+		return tmp;
+	}
+	
 
 	public ArrayList<Company> findAll(int limits, int offset) {
 		ArrayList<Company> company_list = new ArrayList<Company>();

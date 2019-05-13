@@ -67,7 +67,6 @@ public class AddComputer extends HttpServlet {
 		ArrayList<CompanyDTO> companyDTO_list = companyService.findAll();
 		request.setAttribute("listCompany", companyDTO_list);
 		ComputerDTO computerDTO = new ComputerDTO(name, dateIntroduced, dateDiscontinued, idCompanie);
-
 		computerService.create(computerDTO);
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
 		rd.forward(request, response);

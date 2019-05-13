@@ -28,6 +28,11 @@ public class CompanyService {
 	}
 
 
+	public CompanyDTO find(long id) {
+		Company company = this.companyDAO.find(id);
+		return this.mappeur.ModelToDTOCompany(company);
+	}
+	
 	public ArrayList<CompanyDTO> findAll(int limits, int offset) {
 		ArrayList<Company> companies = this.companyDAO.findAll(limits, offset);
 		return this.mappeur.ModelToDTO_(companies);
