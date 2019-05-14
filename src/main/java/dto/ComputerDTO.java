@@ -24,14 +24,15 @@ public class ComputerDTO {
 
 	}
 	
-	public ComputerDTO(String name, String introduced, String discontinued, String company_id, String company_name) {
-		this.id = "-1";
+	public ComputerDTO(String id, String name, String dateIntroduced, String dateDiscontinued, String idCompanie) {
+		this.id = id;
 		this.name = name;
-		this.introduced = introduced;
-		this.discontinued = discontinued;
-		this.company_name = company_name;
-		this.company_id = company_id;
+		this.introduced = dateIntroduced;
+		this.discontinued = dateDiscontinued;
+		this.company_id = idCompanie;
 	}
+	
+
 	public ComputerDTO(String name, String dateIntroduced, String dateDiscontinued, String idCompanie) {
 		this.id = "-1";
 		this.name = name;

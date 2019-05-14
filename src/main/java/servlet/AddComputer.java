@@ -30,7 +30,6 @@ public class AddComputer extends HttpServlet {
      */
     public AddComputer() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -70,7 +69,7 @@ public class AddComputer extends HttpServlet {
 		computerService.create(computerDTO);
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
 		rd.forward(request, response);
-		
+				
 	}
 
 }

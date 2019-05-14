@@ -73,7 +73,6 @@ public class EditComputer extends HttpServlet {
 		ArrayList<CompanyDTO> companyDTO_list = companyService.findAll();
 		request.setAttribute("listCompany", companyDTO_list);
 		ComputerDTO computerDTO = new ComputerDTO(id, name, dateIntroduced, dateDiscontinued, idCompanie);
-		
 		computerService.update(computerDTO);
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
 		rd.forward(request, response);

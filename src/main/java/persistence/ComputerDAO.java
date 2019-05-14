@@ -22,7 +22,7 @@ public class ComputerDAO {
 	private static final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
 	private static final String SQL_DELETE = "DELETE FROM computer WHERE id= ?";
 	private static final String SQL_SELECT_ONE = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id= ?";
-	private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ";
+	private static final String SQL_UPDATE = "UPDATE computer SET name=?, introduced=?, discontinued=?, company_id=? WHERE id =";
 	private static final String SQL_PAGE = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY computer.id LIMIT ? OFFSET ?";
 	private static final String SQL_SELECT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
 	private static final String SQL_COUNT = "SELECT COUNT(*) AS total FROM computer";
@@ -87,7 +87,11 @@ public class ComputerDAO {
 			preparedStatement.setObject(1, obj.getName());
 			preparedStatement.setObject(2, Date.valueOf(obj.getIntroduced()));
 			preparedStatement.setObject(3, Date.valueOf(obj.getDiscontinued()));
-			preparedStatement.setObject(4, obj.getCompany().getName());
+			if(obj.getCompany() == null || obj.getCompany().getId_() == -1) {
+				preparedStatement.setObject(4, null);
+			}else {
+				preparedStatement.setObject(4, obj.getCompany().getId_());
+			}
 			preparedStatement.executeUpdate();
 			return true;
 		} catch (SQLException ex) {

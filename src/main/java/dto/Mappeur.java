@@ -47,26 +47,19 @@ public class Mappeur {
 		LocalDate convDisco = null;
 		Computer computer = null;
 		try {
-			computer = new Computer();
-			computer.setId_(Integer.parseInt(computerDto.getId()));
-			computer.setName(computerDto.getName());
+		
 			if (!computerDto.getIntroduced().equals("null")) {
 				convIntro = LocalDate.parse(computerDto.getIntroduced());
-				computer.setIntroduced(convIntro);
 			}
 
 			if (!computerDto.getDiscontinued().equals("null")) {
 				convDisco = LocalDate.parse(computerDto.getDiscontinued());
-				computer.setDiscontinued(convDisco);
 			}
-
-			Company company = new Company();
-			company.setId_(Integer.parseInt(computerDto.getCompany_id()));
-			company.setName(computerDto.getCompany_name());
-			computer.setCompany(company);
-
+			computer = new Computer(Integer.parseInt(computerDto.getId()), computerDto.getName(), convIntro, convDisco, Integer.parseInt(computerDto.getCompany_id()), computerDto.getCompany_name());
+			
 		} catch (Exception e) {
 			logger.error("erreur format date", new DateFormatException());
+			throw e;
 		}
 
 		return computer;

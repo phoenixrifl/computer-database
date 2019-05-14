@@ -36,7 +36,7 @@ public class DeleteComputer extends HttpServlet {
 			computerService.delete(Integer.parseInt(spliteurSelection[i]));
 		}
 		
-		response.encodeRedirectURL("dashboard");
+		response.sendRedirect("dashboard");
 	}
 
 }

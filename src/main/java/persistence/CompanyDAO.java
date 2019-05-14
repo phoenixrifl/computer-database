@@ -45,7 +45,6 @@ public class CompanyDAO {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			
 			while(resultSet.next()) {
-				System.err.println(resultSet.getInt("id")+ " "+resultSet.getString("name"));
 				
 				tmp = new Company(resultSet.getInt("id"),
 						resultSet.getString("name"));
