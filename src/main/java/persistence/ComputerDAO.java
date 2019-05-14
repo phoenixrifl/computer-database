@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import main.java.exception.SqlCommandeException;
 import main.java.modele.Company;
 import main.java.modele.Computer;
 
@@ -160,7 +161,7 @@ public class ComputerDAO {
 		return computerSearchMax;
 	}
 
-	public ArrayList<Computer> findAll() {
+	public ArrayList<Computer> findAll() throws SqlCommandeException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 
 		try (Connection connect = hikariDataSource.getConnection();
@@ -193,13 +194,13 @@ public class ComputerDAO {
 				computers.add(computer);
 			}
 		} catch (SQLException ex) {
-			ex.printStackTrace();
-			logger.error("Echec liste d'ordinateurs");
+			logger.error("Echec liste d'ordinateurs "+ ex.getMessage());
+			throw new SqlCommandeException(SQL_SELECT);
 		}
 		return computers;
 	}
 
-	public ArrayList<Computer> findAll(int limits, int offset) {
+	public ArrayList<Computer> findAll(int limits, int offset) throws SqlCommandeException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer computer = null;
 
@@ -227,12 +228,13 @@ public class ComputerDAO {
 
 			}
 		} catch (SQLException ex) {
-			logger.error("Echec liste d'ordinateurs");
+			logger.error("Echec liste d'ordinateurs "+ ex.getMessage());
+			throw new SqlCommandeException(SQL_PAGE);
 		}
 		return computers;
 	}
 
-	public ArrayList<Computer> searchComputers(String search, int limits, int offset) {
+	public ArrayList<Computer> searchComputers(String search, int limits, int offset) throws SqlCommandeException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer computer = null;
 
@@ -260,7 +262,8 @@ public class ComputerDAO {
 				computers.add(computer);
 			}
 		} catch (SQLException ex) {
-			logger.error("Echec de la recherche");
+			logger.error("Echec de la recherche "+ ex.getMessage());
+			throw new SqlCommandeException(SQL_SEARCH);
 		}
 		return computers;
 	}

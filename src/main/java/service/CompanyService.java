@@ -29,17 +29,17 @@ public class CompanyService {
 	}
 
 
-	public CompanyDTO find(long id) {
+	public CompanyDTO find(long id) throws SqlCommandeException {
 		Company company = this.companyDAO.find(id);
 		return this.mappeur.ModelToDTOCompany(company);
 	}
 	
-	public ArrayList<CompanyDTO> findAll(int limits, int offset) {
+	public ArrayList<CompanyDTO> findAll(int limits, int offset) throws SqlCommandeException {
 		ArrayList<Company> companies = this.companyDAO.findAll(limits, offset);
 		return this.mappeur.ModelToDTO_(companies);
 	}
 	
-	public ArrayList<CompanyDTO> findAll() {
+	public ArrayList<CompanyDTO> findAll() throws SqlCommandeException {
 		ArrayList<Company> companies = this.companyDAO.findAll();
 		return this.mappeur.ModelToDTO_(companies);
 	}

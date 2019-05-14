@@ -40,7 +40,7 @@ public class CompanyDAO {
 		return instance;
 	}
 
-	public Company find(long id) {
+	public Company find(long id) throws SqlCommandeException {
 		Company tmp = null;
 		try (Connection connect = hikariDataSource.getConnection();
 				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT_ONE_COMPANY);) {
@@ -52,12 +52,14 @@ public class CompanyDAO {
 				tmp = new Company(resultSet.getInt("id"), resultSet.getString("name"));
 			}
 		} catch (SQLException e) {
-			logger.error("impossible de trouver la compagnie recherchée");
+			logger.error("impossible de trouver la compagnie recherchée "+e.getMessage());
+			throw new SqlCommandeException(SQL_SELECT_ONE_COMPANY);
+
 		}
 		return tmp;
 	}
 
-	public ArrayList<Company> findAll(int limits, int offset) {
+	public ArrayList<Company> findAll(int limits, int offset) throws SqlCommandeException {
 		ArrayList<Company> company_list = new ArrayList<Company>();
 		Company tmp = null;
 		try (Connection connect = hikariDataSource.getConnection();
@@ -73,12 +75,14 @@ public class CompanyDAO {
 			}
 
 		} catch (SQLException e) {
-			logger.error("pagination impossible");
+			logger.error("pagination impossible "+e.getMessage());
+			throw new SqlCommandeException(SQL_PAGE);
+
 		}
 		return company_list;
 	}
 
-	public ArrayList<Company> findAll() {
+	public ArrayList<Company> findAll() throws SqlCommandeException {
 		ArrayList<Company> company_list = new ArrayList<Company>();
 		Company tmp = null;
 		try (Connection connect = hikariDataSource.getConnection();
@@ -92,7 +96,9 @@ public class CompanyDAO {
 			}
 
 		} catch (SQLException e) {
-			logger.error("liste compagnie impossible");
+			logger.error("liste compagnie impossible "+ e.getMessage());
+			throw new SqlCommandeException(SQL_SELECT);
+
 		}
 		return company_list;
 	}

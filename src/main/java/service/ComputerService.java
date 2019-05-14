@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import main.java.dto.ComputerDTO;
 import main.java.dto.Mappeur;
+import main.java.exception.SqlCommandeException;
 import main.java.modele.Computer;
 import main.java.persistence.ComputerDAO;
 import main.java.validator.DateValidator;
@@ -86,18 +87,18 @@ public class ComputerService {
 		return this.computerDAO.countSearch(search);
 	}
 	
-	public ArrayList<ComputerDTO> findAll(){
+	public ArrayList<ComputerDTO> findAll() throws SqlCommandeException{
 		ArrayList<Computer> computer = this.computerDAO.findAll();
 		return this.mappeur.ModelToDTO(computer);
 		
 	}
 	
-	public ArrayList<ComputerDTO> findAll(int limits, int offset){
+	public ArrayList<ComputerDTO> findAll(int limits, int offset) throws SqlCommandeException{
 			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset);
 			return this.mappeur.ModelToDTO(computers);
 	}
 
-	public ArrayList<ComputerDTO> find(String search, int limits, int offset) {
+	public ArrayList<ComputerDTO> find(String search, int limits, int offset) throws SqlCommandeException {
 		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, limits, offset);
 		return this.mappeur.ModelToDTO(computers);
 	}

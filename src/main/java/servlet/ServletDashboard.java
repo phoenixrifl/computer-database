@@ -10,7 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import main.java.dto.ComputerDTO;
+import main.java.exception.SqlCommandeException;
 import main.java.service.ComputerService;
 
 /**
@@ -21,13 +25,14 @@ import main.java.service.ComputerService;
 public class ServletDashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerService computerService = ComputerService.getInstance();
+	private static Logger logger = LoggerFactory.getLogger(ServletDashboard.class);
+
 	
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ServletDashboard() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -62,7 +67,13 @@ public class ServletDashboard extends HttpServlet {
 		}
 		offset = limits * (pageCourante-1);
 		
-		ArrayList<ComputerDTO> computerDTO_list = computerService.findAll(limits, offset);
+		ArrayList<ComputerDTO> computerDTO_list=null;
+		try {
+			computerDTO_list = computerService.findAll(limits, offset);
+		} catch (SqlCommandeException e) {
+			logger.error("findAll "+e.getMessage());
+
+		}
 		int nbTotal = computerService.count();
 		int nbTotalPage = nbTotal / limits;
 		if(nbTotal % limits != 0)
