@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 import main.java.dto.CompanyDTO;
 import main.java.dto.ComputerDTO;
+import main.java.exception.SqlCommandeException;
 import main.java.service.CompanyService;
 import main.java.service.ComputerService;
 public class Controller {
@@ -26,7 +27,7 @@ public class Controller {
 		return instance;
 	}
 	
-	public void action() {
+	public void action() throws SqlCommandeException {
 		boolean play = true;
 		while(play) {
 			int choix = Ui.demande();
@@ -55,6 +56,10 @@ public class Controller {
 					computerService.delete(idDelete); 
 					break;
 				case 7:
+					int company = Ui.demandeIdCompany();
+					companyService.delete(company);
+					break;
+				case 8:
 					play = false;
 					break;
 				

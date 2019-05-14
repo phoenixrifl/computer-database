@@ -26,6 +26,8 @@ public class ComputerDAO {
 	private static final String SQL_PAGE = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY computer.id LIMIT ? OFFSET ?";
 	private static final String SQL_SELECT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
 	private static final String SQL_COUNT = "SELECT COUNT(*) AS total FROM computer";
+	private static final String SQL_SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY computer.id LIMIT ? OFFSET ?";
+	private static final String SQL_COUNT_SEARCH = "SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR  company.name LIKE ? ";
 
 	private static ComputerDAO instance = null;
 
@@ -87,9 +89,9 @@ public class ComputerDAO {
 			preparedStatement.setObject(1, obj.getName());
 			preparedStatement.setObject(2, Date.valueOf(obj.getIntroduced()));
 			preparedStatement.setObject(3, Date.valueOf(obj.getDiscontinued()));
-			if(obj.getCompany() == null || obj.getCompany().getId_() == -1) {
+			if (obj.getCompany() == null || obj.getCompany().getId_() == -1) {
 				preparedStatement.setObject(4, null);
-			}else {
+			} else {
 				preparedStatement.setObject(4, obj.getCompany().getId_());
 			}
 			preparedStatement.executeUpdate();
@@ -136,10 +138,26 @@ public class ComputerDAO {
 				computerMax = resultSet.getInt("total");
 			}
 		} catch (SQLException ex) {
-			ex.printStackTrace();
 			logger.error("echec count");
 		}
 		return computerMax;
+	}
+
+	public int countSearch(String search) {
+		int computerSearchMax = 0;
+		try (Connection connect = hikariDataSource.getConnection();
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_COUNT_SEARCH);) {
+			preparedStatement.setString(1, "%" + search + "%");
+			preparedStatement.setString(2, "%" + search + "%");
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if (resultSet.first()) {
+				computerSearchMax = resultSet.getInt("total");
+			}
+		} catch (SQLException ex) {
+			logger.error("echec countSearch");
+		}
+
+		return computerSearchMax;
 	}
 
 	public ArrayList<Computer> findAll() {
@@ -210,6 +228,39 @@ public class ComputerDAO {
 			}
 		} catch (SQLException ex) {
 			logger.error("Echec liste d'ordinateurs");
+		}
+		return computers;
+	}
+
+	public ArrayList<Computer> searchComputers(String search, int limits, int offset) {
+		ArrayList<Computer> computers = new ArrayList<Computer>();
+		Computer computer = null;
+
+		try (Connection connect = hikariDataSource.getConnection();
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SEARCH)) {
+			preparedStatement.setString(1, "%" + search + "%");
+			preparedStatement.setString(2, "%" + search + "%");
+			preparedStatement.setLong(3, limits);
+			preparedStatement.setLong(4, offset);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				Date introduced = resultSet.getDate("introduced");
+				LocalDate convDate = null;
+				if (introduced != null) {
+					convDate = introduced.toLocalDate();
+				}
+				Date discontinued = resultSet.getDate("discontinued");
+				LocalDate convDate1 = null;
+				if (discontinued != null) {
+					convDate1 = discontinued.toLocalDate();
+				}
+				computer = new Computer(resultSet.getInt("computer.id"), resultSet.getString("computer.name"), convDate,
+						convDate1, resultSet.getInt("company.id"), resultSet.getString("company.name"));
+				computers.add(computer);
+			}
+		} catch (SQLException ex) {
+			logger.error("Echec de la recherche");
 		}
 		return computers;
 	}

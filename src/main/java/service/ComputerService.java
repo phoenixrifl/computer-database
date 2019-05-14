@@ -82,6 +82,10 @@ public class ComputerService {
 		return this.computerDAO.count();
 	}
 	
+	public int countSearch(String search) {
+		return this.computerDAO.countSearch(search);
+	}
+	
 	public ArrayList<ComputerDTO> findAll(){
 		ArrayList<Computer> computer = this.computerDAO.findAll();
 		return this.mappeur.ModelToDTO(computer);
@@ -93,9 +97,9 @@ public class ComputerService {
 			return this.mappeur.ModelToDTO(computers);
 	}
 
-	public ArrayList<ComputerDTO> find(String search) {
-		
-		return null;
+	public ArrayList<ComputerDTO> find(String search, int limits, int offset) {
+		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, limits, offset);
+		return this.mappeur.ModelToDTO(computers);
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import main.java.dto.CompanyDTO;
 import main.java.dto.Mappeur;
+import main.java.exception.SqlCommandeException;
 import main.java.modele.Company;
 import main.java.persistence.CompanyDAO;
 
@@ -41,5 +42,9 @@ public class CompanyService {
 	public ArrayList<CompanyDTO> findAll() {
 		ArrayList<Company> companies = this.companyDAO.findAll();
 		return this.mappeur.ModelToDTO_(companies);
+	}
+
+	public boolean delete(int id) throws SqlCommandeException {
+		return this.companyDAO.delete(id);
 	} 
 }
