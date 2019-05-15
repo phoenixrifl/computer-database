@@ -1,4 +1,4 @@
-package main.java.modele;
+package modele;
 
 public class Company {
 	private int id_;
@@ -12,6 +12,9 @@ public class Company {
 		this.name = name;
 	}
 
+	public void setId_(int id_) {
+		this.id_ = id_;
+	}
 
 	public int getId_() {
 		return id_;

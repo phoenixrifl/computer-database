@@ -1,12 +1,12 @@
-package main.java.service;
+package service;
 
 import java.util.ArrayList;
 
-import main.java.dto.CompanyDTO;
-import main.java.dto.Mappeur;
-import main.java.modele.Company;
-import main.java.persistence.CompanyDAO;
-import main.java.persistence.ComputerDAO;
+import dto.CompanyDTO;
+import dto.Mappeur;
+import exception.SqlCommandeException;
+import modele.Company;
+import persistence.CompanyDAO;
 
 
 public class CompanyService {
@@ -27,15 +27,24 @@ public class CompanyService {
 		}
 		return instance;
 	}
-	
-	public ArrayList<CompanyDTO> findAll(){
-		ArrayList<Company> company = this.companyDAO.findAll();
-		return this.mappeur.ModelToDTO_(company);
-		
-	}
 
-	public ArrayList<CompanyDTO> findAll(int limits, int offset) {
+
+	public CompanyDTO find(long id) throws SqlCommandeException {
+		Company company = this.companyDAO.find(id);
+		return this.mappeur.ModelToDTOCompany(company);
+	}
+	
+	public ArrayList<CompanyDTO> findAll(int limits, int offset) throws SqlCommandeException {
 		ArrayList<Company> companies = this.companyDAO.findAll(limits, offset);
 		return this.mappeur.ModelToDTO_(companies);
 	}
+	
+	public ArrayList<CompanyDTO> findAll() throws SqlCommandeException {
+		ArrayList<Company> companies = this.companyDAO.findAll();
+		return this.mappeur.ModelToDTO_(companies);
+	}
+
+	public boolean delete(int id) throws SqlCommandeException {
+		return this.companyDAO.delete(id);
+	} 
 }

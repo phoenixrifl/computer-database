@@ -1,4 +1,4 @@
-package main.java.modele;
+package modele;
 
 import java.time.LocalDate;
 
@@ -8,18 +8,23 @@ public class Computer {
 	private String name;
 	private LocalDate introduced;
 	private LocalDate discontinued;
-	private int company_id;
+	private Company company;
 	
 	public Computer() {}
 	
-	public Computer(int id_, String name, LocalDate introduced, LocalDate discontinued, int company_id) {
+	public Computer(int id_, String name, LocalDate introduced, LocalDate discontinued, int company_id, String company_name) {
 		super();
 		this.id_ = id_;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.company_id = company_id;
+		if(company_id != 0) {
+			this.company = new Company(company_id, company_name);
+		}
+		else
+			this.company = null;
 	}
+	
 
 	public String getName() {
 		return name;
@@ -30,7 +35,7 @@ public class Computer {
 	}
 
 	public LocalDate getIntroduced() {
-		return introduced;
+		return this.introduced;
 	}
 
 	public void setIntroduced(LocalDate introduced) {
@@ -38,7 +43,7 @@ public class Computer {
 	}
 
 	public LocalDate getDiscontinued() {
-		return discontinued;
+		return this.discontinued;
 	}
 
 	public void setDiscontinued(LocalDate discontinued) {
@@ -52,21 +57,20 @@ public class Computer {
 	public void setId_(int id_) {
 		this.id_ = id_;
 	}
-	public int getCompany_id() {
-		return company_id;
+	
+	public Company getCompany() {
+		return company;
 	}
-	
-	public void setCompany_id(int company_id) {
-		this.company_id = company_id;
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
-	
-	
+
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + company_id;
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
 		result = prime * result + id_;
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
@@ -83,9 +87,18 @@ public class Computer {
 		if (getClass() != obj.getClass())
 			return false;
 		Computer other = (Computer) obj;
-		if (company_id != other.company_id)
+		if (discontinued == null) {
+			if (other.discontinued != null)
+				return false;
+		} else if (!discontinued.equals(other.discontinued))
 			return false;
-		
+		if (id_ != other.id_)
+			return false;
+		if (introduced == null) {
+			if (other.introduced != null)
+				return false;
+		} else if (!introduced.equals(other.introduced))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -97,7 +110,7 @@ public class Computer {
 	@Override
 	public String toString() {
 		return "Computer [id_=" + id_ + ", name=" + name + ", introduced=" + introduced + ", discontinued="
-				+ discontinued + ", company_id=" + company_id + "]\n";
+				+ discontinued + ", company_name=" + company.getName() + "]\n";
 	}
 	
 	

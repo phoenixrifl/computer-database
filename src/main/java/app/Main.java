@@ -1,11 +1,16 @@
-package main.java.app;
-import main.java.ui_controller.Controller;
+package app;
+
+import exception.SqlCommandeException;
+import ui_controller.Controller;
 
 public class Main {
 
-	public static void main(String[] args) {		
-
+	
+	public static void main(String[] args) throws SqlCommandeException {		
+		
 		Controller.getInstance().action();
 	}
+
+	
 
 }
