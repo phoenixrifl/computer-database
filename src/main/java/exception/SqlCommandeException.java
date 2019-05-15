@@ -1,4 +1,4 @@
-package main.java.exception;
+package exception;
 
 public class SqlCommandeException extends Exception {
 

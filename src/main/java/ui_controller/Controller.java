@@ -1,11 +1,11 @@
-package main.java.ui_controller;
+package ui_controller;
 import java.util.ArrayList;
 
-import main.java.dto.CompanyDTO;
-import main.java.dto.ComputerDTO;
-import main.java.exception.SqlCommandeException;
-import main.java.service.CompanyService;
-import main.java.service.ComputerService;
+import dto.CompanyDTO;
+import dto.ComputerDTO;
+import exception.SqlCommandeException;
+import service.CompanyService;
+import service.ComputerService;
 public class Controller {
 	
 
@@ -67,7 +67,7 @@ public class Controller {
 		}
 	}
 	
-	private void pagination(int computer_or_company){
+	private void pagination(int computer_or_company) throws SqlCommandeException{
 		boolean next_page = false;
 		int n = 0;
 		while(!next_page) {

@@ -1,12 +1,12 @@
-package main.java.service;
+package service;
 
 import java.util.ArrayList;
 
-import main.java.dto.CompanyDTO;
-import main.java.dto.Mappeur;
-import main.java.exception.SqlCommandeException;
-import main.java.modele.Company;
-import main.java.persistence.CompanyDAO;
+import dto.CompanyDTO;
+import dto.Mappeur;
+import exception.SqlCommandeException;
+import modele.Company;
+import persistence.CompanyDAO;
 
 
 public class CompanyService {

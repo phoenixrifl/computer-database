@@ -1,11 +1,11 @@
-package main.java.validator;
+package validator;
 
 import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import main.java.modele.Computer;
+import modele.Computer;
 
 public class DateValidator {
 
@@ -30,7 +30,7 @@ public class DateValidator {
 		}
 		else {
 			 if(introduced.isAfter(discontinued)) {
-				 logger.error("date de début trop grand par rapport à date de fin" , new Exception());
+				 logger.error("date de début trop grand par rapport à date de fin");
 				 isValid = false;
 			 }
 			 else 

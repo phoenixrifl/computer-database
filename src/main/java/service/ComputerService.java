@@ -1,15 +1,15 @@
-package main.java.service;
+package service;
 
 import java.util.ArrayList;
 
 
 
-import main.java.dto.ComputerDTO;
-import main.java.dto.Mappeur;
-import main.java.exception.SqlCommandeException;
-import main.java.modele.Computer;
-import main.java.persistence.ComputerDAO;
-import main.java.validator.DateValidator;
+import dto.ComputerDTO;
+import dto.Mappeur;
+import exception.SqlCommandeException;
+import modele.Computer;
+import persistence.ComputerDAO;
+import validator.DateValidator;
 
 public class ComputerService {
 	

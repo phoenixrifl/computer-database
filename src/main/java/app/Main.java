@@ -1,7 +1,7 @@
-package main.java.app;
+package app;
 
-import main.java.exception.SqlCommandeException;
-import main.java.ui_controller.Controller;
+import exception.SqlCommandeException;
+import ui_controller.Controller;
 
 public class Main {
 

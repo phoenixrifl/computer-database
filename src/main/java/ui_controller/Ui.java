@@ -1,5 +1,5 @@
 
-package main.java.ui_controller;
+package ui_controller;
 
 import java.util.Scanner;
 

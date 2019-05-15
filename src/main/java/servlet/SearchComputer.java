@@ -1,4 +1,4 @@
-package main.java.servlet;
+package servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import main.java.dto.ComputerDTO;
-import main.java.exception.SqlCommandeException;
-import main.java.service.ComputerService;
+import dto.ComputerDTO;
+import exception.SqlCommandeException;
+import service.ComputerService;
 
 /**
  * Servlet implementation class SearchComputer
@@ -81,21 +81,29 @@ public class SearchComputer extends HttpServlet {
 		if(nbTotal % limits != 0)
 			nbTotalPage++;
 		
-		int begin = 0, end =0;
-		if(pageCourante <= 3) {
+		int begin = 0, end = 0;
+		if (nbTotalPage < 5) {
 			begin = 1;
-			end = 5;
-		}
-		else if(pageCourante >= nbTotalPage-3) {
-			begin = nbTotalPage-6;
 			end = nbTotalPage;
+		} else {
+			if (pageCourante <= 3) {
+				begin = 1;
+				end = 5;
+			} else if (pageCourante >= nbTotalPage - 3) {
+				begin = nbTotalPage - 6;
+				end = nbTotalPage;
+			} else {
+				begin = pageCourante - 3;
+				end = pageCourante - 3;
+			}
 		}
-		else {
-			begin = pageCourante-3;
-			end = pageCourante-3;
+
+		if (pageCourante >= nbTotalPage) {
+			pageCourante = nbTotalPage - 1;
+			page = String.valueOf(pageCourante);
 		}
-		if(pageCourante >= nbTotalPage) {
-			pageCourante = nbTotalPage-1;
+		if (pageCourante < 1) {
+			pageCourante = 1;
 			page = String.valueOf(pageCourante);
 		}
 		

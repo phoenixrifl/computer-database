@@ -1,4 +1,4 @@
-package main.java.servlet;
+package servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import main.java.dto.CompanyDTO;
-import main.java.dto.ComputerDTO;
-import main.java.exception.SqlCommandeException;
-import main.java.service.CompanyService;
-import main.java.service.ComputerService;
+import dto.CompanyDTO;
+import dto.ComputerDTO;
+import exception.SqlCommandeException;
+import service.CompanyService;
+import service.ComputerService;
+import validator.ComputerValidator;
 
 /**
  * Servlet implementation class AddComputer
@@ -29,7 +30,7 @@ public class AddComputer extends HttpServlet {
 	private ComputerService computerService = ComputerService.getInstance();
 	private CompanyService companyService = CompanyService.getInstance();
 	private static Logger logger = LoggerFactory.getLogger(AddComputer.class);
-
+	private ComputerValidator computerValidator = ComputerValidator.getInstance();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -81,9 +82,18 @@ public class AddComputer extends HttpServlet {
 		}
 		request.setAttribute("listCompany", companyDTO_list);
 		ComputerDTO computerDTO = new ComputerDTO(name, dateIntroduced, dateDiscontinued, idCompanie);
-		computerService.create(computerDTO);
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
-		rd.forward(request, response);
+		if(computerValidator.isAComputerValid(computerDTO)) {
+			computerService.create(computerDTO);
+			request.setAttribute("reussite", "Insertion reussite");
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			request.setAttribute("echec", "Echec insertion");
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
+			rd.forward(request, response);
+		}
+		
 				
 	}
 

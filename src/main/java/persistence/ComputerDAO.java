@@ -1,4 +1,4 @@
-package main.java.persistence;
+package persistence;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import main.java.exception.SqlCommandeException;
-import main.java.modele.Company;
-import main.java.modele.Computer;
+import exception.SqlCommandeException;
+import modele.Company;
+import modele.Computer;
 
 public class ComputerDAO {
 
@@ -35,10 +36,20 @@ public class ComputerDAO {
 	private CompanyDAO companyDAO = CompanyDAO.getInstance();
 	private static Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 
-	private String config = "/home/excilys/computer-database/src/main/resources/hikari.properties";
-	private HikariConfig configHakari = new HikariConfig(config);
-	private HikariDataSource hikariDataSource = new HikariDataSource(configHakari);
+	private static HikariConfig config = new HikariConfig();
+	private static HikariDataSource hikariDataSource;
 
+	 static {
+		 ResourceBundle bundle = ResourceBundle.getBundle("hikari");
+		 config.setDriverClassName(bundle.getString("driverClassName"));
+		 config.setJdbcUrl(bundle.getString("jdbcUrl"));
+		 config.setUsername(bundle.getString("username"));
+		 config.setPassword(bundle.getString("password"));
+		 config.addDataSourceProperty( "cachePrepStmts" , "true" );
+		 config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+		 config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+		 hikariDataSource = new HikariDataSource(config);
+		 }
 	private ComputerDAO() {
 	}
 

@@ -1,4 +1,4 @@
-package main.java.dto;
+package dto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import main.java.exception.DateFormatException;
-import main.java.modele.Company;
-import main.java.modele.Computer;
+import exception.DateFormatException;
+import modele.Company;
+import modele.Computer;
 
 public class Mappeur {
 
