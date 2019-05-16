@@ -21,16 +21,33 @@ import modele.Computer;
 
 public class ComputerDAO {
 
-	private static final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) VALUES (NULL,?,?,?,?);";
-	private static final String SQL_DELETE = "DELETE FROM computer WHERE id= ?";
-	private static final String SQL_SELECT_ONE = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id= ?";
-	private static final String SQL_UPDATE = "UPDATE computer SET name=?, introduced=?, discontinued=?, company_id=? WHERE id =";
-	private static final String SQL_PAGE = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY computer.id LIMIT ? OFFSET ?";
-	private static final String SQL_SELECT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
-	private static final String SQL_COUNT = "SELECT COUNT(*) AS total FROM computer";
-	private static final String SQL_SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY computer.id LIMIT ? OFFSET ?";
-	private static final String SQL_COUNT_SEARCH = "SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR  company.name LIKE ? ";
-
+	private static final String SQL_INSERT = 
+			"INSERT INTO computer (id,name,introduced,discontinued,company_id) "
+			+ "VALUES (NULL,?,?,?,?);";
+	private static final String SQL_DELETE = 
+			"DELETE FROM computer WHERE id= ?";
+	private static final String SQL_SELECT_ONE = 
+			"SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id= ?";
+	private static final String SQL_UPDATE = 
+			"UPDATE computer SET name=?, introduced=?, discontinued=?, company_id=? WHERE id =";
+	private static final String SQL_PAGE = 
+			"SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name "
+			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY ";
+	private static final String SQL_SELECT = 
+			"SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
+	private static final String SQL_COUNT = 
+			"SELECT COUNT(*) AS total FROM computer";
+	private static final String SQL_SEARCH = 
+			"SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name "
+			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY ";
+	private static final String SQL_COUNT_SEARCH = 
+			"SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE UPPER(computer.name) LIKE UPPER(?) OR  UPPER(company.name) LIKE UPPER(?) "
+			+ "ORDER BY ";
+	
+	private static final String SQL_LIMIT_OFFSET = " LIMIT ? OFFSET ?";
+	
 	private static ComputerDAO instance = null;
 
 	private CompanyDAO companyDAO = CompanyDAO.getInstance();
@@ -155,10 +172,10 @@ public class ComputerDAO {
 		return computerMax;
 	}
 
-	public int countSearch(String search) {
+	public int countSearch(String search, OrderByMode mode, OrderByColumn column) {
 		int computerSearchMax = 0;
 		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_COUNT_SEARCH);) {
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_COUNT_SEARCH+" "+column.toString()+" "+mode.toString()+" "+SQL_LIMIT_OFFSET);) {
 			preparedStatement.setString(1, "%" + search + "%");
 			preparedStatement.setString(2, "%" + search + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -198,7 +215,6 @@ public class ComputerDAO {
 				int company_id = result.getInt("company_id");
 				if (company_id != 0) {
 					Company company = companyDAO.find(company_id);
-					// company.setName(companyDAO.find(company_id).getName());
 					computer.setCompany(company);
 				} else
 					computer.setCompany(null);
@@ -211,12 +227,12 @@ public class ComputerDAO {
 		return computers;
 	}
 
-	public ArrayList<Computer> findAll(int limits, int offset) throws SqlCommandeException {
+	public ArrayList<Computer> findAll(int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer computer = null;
 
 		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE)) {
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE+" "+column.toString()+" "+mode.toString()+" "+SQL_LIMIT_OFFSET)) {
 
 			preparedStatement.setLong(1, limits);
 			preparedStatement.setLong(2, offset);
@@ -245,12 +261,13 @@ public class ComputerDAO {
 		return computers;
 	}
 
-	public ArrayList<Computer> searchComputers(String search, int limits, int offset) throws SqlCommandeException {
+	public ArrayList<Computer> searchComputers(String search, int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer computer = null;
 
 		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SEARCH)) {
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SEARCH+" "+column.toString()+" "+mode.toString()+" "+SQL_LIMIT_OFFSET)) {
+			
 			preparedStatement.setString(1, "%" + search + "%");
 			preparedStatement.setString(2, "%" + search + "%");
 			preparedStatement.setLong(3, limits);
@@ -278,5 +295,5 @@ public class ComputerDAO {
 		}
 		return computers;
 	}
-
+	
 }

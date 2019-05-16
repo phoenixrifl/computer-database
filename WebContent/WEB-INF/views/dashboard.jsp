@@ -16,8 +16,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="dashboard"> Application - Computer
+				Database </a>
 		</div>
 	</header>
 
@@ -26,7 +26,8 @@
 			<h1 id="homeTitle">${taille} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="searchComputer" method="GET" class="form-inline">
+					<form id="searchForm" action="dashboard" method="GET"
+						class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name" /> <input
@@ -60,12 +61,36 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
+						<th>Computer name<a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.name&asc=ASC">
+								<i class="fa fa-arrow-circle-o-down"></i>
+						</a> <a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.name&asc=DESC">
+								<i class="fa fa-arrow-circle-o-up"></i>
+						</a></th>
+						<th>Introduced date<a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.introduced&asc=ASC">
+								<i class="fa fa-arrow-circle-o-down"></i>
+						</a><a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.introduced&asc=DESC">
+								<i class="fa fa-arrow-circle-o-up"></i>
+						</a></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
+						<th>Discontinued date<a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.discontinued&asc=ASC">
+								<i class="fa fa-arrow-circle-o-down"></i>
+						</a><a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.discontinued&asc=DESC">
+								<i class="fa fa-arrow-circle-o-up"></i>
+						</a></th>
 						<!-- Table header for Company -->
-						<th>Company</th>
+						<th>Company<a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=company.name&asc=ASC">
+								<i class="fa fa-arrow-circle-o-down"></i>
+						</a><a
+							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=company.name&asc=DESC">
+								<i class="fa fa-arrow-circle-o-up"></i>
+						</a></th>
 
 					</tr>
 				</thead>
@@ -76,12 +101,14 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer_carac.getId()}"></td>
-							<td><a href="editComputer?id=${computer_carac.getId()}&computerName=${computer_carac.getName()}&introduced=${computer_carac.getIntroduced()}&discontinued=${computer_carac.getDiscontinued()}" onclick="">${computer_carac.getName()}</a></td>
+							<td><a
+								href="editComputer?id=${computer_carac.getId()}&computerName=${computer_carac.getName()}&introduced=${computer_carac.getIntroduced()}&discontinued=${computer_carac.getDiscontinued()}"
+								onclick="">${computer_carac.getName()}</a></td>
 							<td>${computer_carac.getIntroduced()}</td>
 							<td>${computer_carac.getDiscontinued()}</td>
 							<td>${computer_carac.getCompany_name()}</td>
-							</tr>
-					</c:forEach>				
+						</tr>
+					</c:forEach>
 
 				</tbody>
 			</table>
@@ -91,20 +118,21 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="dashboard?page=${page-1}&PCparPage=${limit}" aria-label="Previous"> <span
-						aria-hidden="true">&laquo;</span>
+				<li><a href="dashboard?page=${page-1}&PCparPage=${limit}&orderbycolumn=${orderbycolumn}&asc=${asc}"
+					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
-				<c:forEach begin ="${begin}" end="${end}" varStatus="loop">
-					<li><a href="dashboard?page=${loop.index}&limit=${limit}">${loop.index}</a></li>
+				<c:forEach begin="${begin}" end="${end}" varStatus="loop">
+					<li><a href="dashboard?page=${loop.index}&limit=${limit}&orderbycolumn=${orderbycolumn}&asc=${asc}">${loop.index}</a></li>
 				</c:forEach>
-				<li><a href="dashboard?page=${page+1}&PCparPage=${limit}" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				<li><a href="dashboard?page=${page+1}&PCparPage=${limit}&orderbycolumn=${orderbycolumn}&asc=${asc}"
+					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?page=1&limit=10" class="btn btn-default">10</a>
-				<a href="dashboard?page=1&limit=50" class="btn btn-default">50</a>
-				<a href="dashboard?page=1&limit=100" class="btn btn-default">100</a>
+				<a href="dashboard?page=1&limit=10&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">10</a> 
+				<a href="dashboard?page=1&limit=50&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">50</a> 
+				<a href="dashboard?page=1&limit=100&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">100</a>
 			</div>
 		</div>
 	</footer>
