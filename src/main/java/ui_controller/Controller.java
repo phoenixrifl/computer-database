@@ -1,11 +1,13 @@
-package main.java.ui_controller;
+package ui_controller;
 import java.util.ArrayList;
 
-import main.java.dto.CompanyDTO;
-import main.java.dto.ComputerDTO;
-import main.java.exception.NotOneTwoNumber;
-import main.java.service.CompanyService;
-import main.java.service.ComputerService;
+import dto.CompanyDTO;
+import dto.ComputerDTO;
+import exception.SqlCommandeException;
+import persistence.OrderByColumn;
+import persistence.OrderByMode;
+import service.CompanyService;
+import service.ComputerService;
 public class Controller {
 	
 
@@ -27,7 +29,7 @@ public class Controller {
 		return instance;
 	}
 	
-	public void action() throws NotOneTwoNumber {
+	public void action() throws SqlCommandeException {
 		boolean play = true;
 		while(play) {
 			int choix = Ui.demande();
@@ -56,6 +58,10 @@ public class Controller {
 					computerService.delete(idDelete); 
 					break;
 				case 7:
+					int company = Ui.demandeIdCompany();
+					companyService.delete(company);
+					break;
+				case 8:
 					play = false;
 					break;
 				
@@ -63,19 +69,18 @@ public class Controller {
 		}
 	}
 	
-	private void pagination(int computer_or_company) throws NotOneTwoNumber {
+	private void pagination(int computer_or_company) throws SqlCommandeException{
 		boolean next_page = false;
-		int n = 1;
+		int n = 0;
 		while(!next_page) {
 			if(computer_or_company == 1) {
-				ArrayList<ComputerDTO> computers = computerService.findAll(10, n);
+				ArrayList<ComputerDTO> computers = computerService.findAll(10, n, OrderByMode.ASC, OrderByColumn.ID);
 				computers.forEach(System.out::println);
 			}
 			else if(computer_or_company == 2) {
 				ArrayList<CompanyDTO> companies = companyService.findAll(10,n);
 				companies.forEach(System.out::println);
 			}
-			else throw new NotOneTwoNumber();
 			int choix = Ui.choixPage();
 			switch(choix) {
 				case 1:

@@ -1,22 +1,30 @@
-package main.java.service;
+package service;
 
 import java.util.ArrayList;
 
-import main.java.dto.ComputerDTO;
-import main.java.dto.Mappeur;
-import main.java.modele.Computer;
-import main.java.persistence.ComputerDAO;
+
+
+import dto.ComputerDTO;
+import dto.Mappeur;
+import exception.SqlCommandeException;
+import modele.Computer;
+import persistence.ComputerDAO;
+import persistence.OrderByColumn;
+import persistence.OrderByMode;
+import validator.DateValidator;
 
 public class ComputerService {
 	
 	private ComputerDAO computerDAO;
 	private Mappeur mappeur;
+	private DateValidator dateValidator;
 	
 	private static ComputerService instance = null;
-	
+
 	private ComputerService() {
-		this.computerDAO = new ComputerDAO();
+		this.computerDAO = ComputerDAO.getInstance();
 		this.mappeur = Mappeur.getInstance();
+		this.dateValidator = DateValidator.getInstance();
 	}
 	
 	public final static ComputerService getInstance() {
@@ -32,7 +40,8 @@ public class ComputerService {
 				(computer[0],
 				computer[1],
 				computer[2],
-				computer[3]
+				computer[3],
+				computer[4]
 				));
 	}
 	
@@ -47,16 +56,24 @@ public class ComputerService {
 				));
 	}
 	
-	public boolean create(ComputerDTO computer) {
-		return this.computerDAO.create(this.mappeur.DTOToModel(computer));
+	public boolean create(ComputerDTO computerDto) {
+		Computer computer = this.mappeur.DTOToModel(computerDto);
+		if(dateValidator.dateIsValid(computer)) {
+			this.computerDAO.create(computer);
+		}
+		return true;
 	}
 	
 	public boolean delete(int id) {
 		return this.computerDAO.delete(this.mappeur.DTOToModel(findOne(id)));
 	}
 	
-	public boolean update(ComputerDTO computer) {
-		return this.computerDAO.update(this.mappeur.DTOToModel(computer));
+	public boolean update(ComputerDTO computerDto) {
+		Computer computer = this.mappeur.DTOToModel(computerDto);
+		if(dateValidator.dateIsValid(computer)) {
+			this.computerDAO.update(computer);
+		}
+		return true;
 	}
 	
 	public ComputerDTO findOne(int id) {
@@ -64,15 +81,28 @@ public class ComputerService {
 		return this.mappeur.ModelToDTO(computer);
 	}
 	
-	public ArrayList<ComputerDTO> findAll(){
+	public int count() {
+		return this.computerDAO.count();
+	}
+	
+	public int countSearch(String search) {
+		return this.computerDAO.countSearch(search);
+	}
+	
+	public ArrayList<ComputerDTO> findAll() throws SqlCommandeException{
 		ArrayList<Computer> computer = this.computerDAO.findAll();
 		return this.mappeur.ModelToDTO(computer);
 		
 	}
 	
-	public ArrayList<ComputerDTO> findAll(int limits, int offset){
-			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset);
+	public ArrayList<ComputerDTO> findAll(int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException{
+			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset, mode, column);
 			return this.mappeur.ModelToDTO(computers);
+	}
+
+	public ArrayList<ComputerDTO> find(String search, int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
+		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, limits, offset, mode, column);
+		return this.mappeur.ModelToDTO(computers);
 	}
 	
 }
