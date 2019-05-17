@@ -26,13 +26,10 @@
 			<h1 id="homeTitle">${taille} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="dashboard" method="GET"
-						class="form-inline">
+					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
 
-						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" />
+						<input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" /> 
+						<input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
@@ -61,34 +58,35 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
+
 						<th>Computer name<a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.name&asc=ASC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a> <a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.name&asc=DESC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.name&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<th>Introduced date<a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.introduced&asc=ASC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.introduced&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.introduced&asc=DESC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.introduced&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Discontinued Date -->
 						<th>Discontinued date<a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.discontinued&asc=ASC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.discontinued&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=computer.discontinued&asc=DESC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.discontinued&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Company -->
 						<th>Company<a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=company.name&asc=ASC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=company.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${page}&PCparPage=${limit}&orderbycolumn=company.name&asc=DESC">
+							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=company.name&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 
@@ -118,21 +116,21 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="dashboard?page=${page-1}&PCparPage=${limit}&orderbycolumn=${orderbycolumn}&asc=${asc}"
+				<li><a href="dashboard?page=${page-1}&PCparPage=${limit}&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}"
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 				<c:forEach begin="${begin}" end="${end}" varStatus="loop">
-					<li><a href="dashboard?page=${loop.index}&limit=${limit}&orderbycolumn=${orderbycolumn}&asc=${asc}">${loop.index}</a></li>
+					<li><a href="dashboard?page=${loop.index}&limit=${limit}&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}">${loop.index}</a></li>
 				</c:forEach>
-				<li><a href="dashboard?page=${page+1}&PCparPage=${limit}&orderbycolumn=${orderbycolumn}&asc=${asc}"
+				<li><a href="dashboard?page=${page+1}&PCparPage=${limit}&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?page=1&limit=10&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">10</a> 
-				<a href="dashboard?page=1&limit=50&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">50</a> 
-				<a href="dashboard?page=1&limit=100&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">100</a>
+				<a href="dashboard?page=1&limit=10&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">10</a> 
+				<a href="dashboard?page=1&limit=50&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">50</a> 
+				<a href="dashboard?page=1&limit=100&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">100</a>
 			</div>
 		</div>
 	</footer>

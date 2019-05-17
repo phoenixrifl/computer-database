@@ -85,8 +85,8 @@ public class ComputerService {
 		return this.computerDAO.count();
 	}
 	
-	public int countSearch(String search, OrderByMode mode, OrderByColumn column) {
-		return this.computerDAO.countSearch(search, mode, column);
+	public int countSearch(String search) {
+		return this.computerDAO.countSearch(search);
 	}
 	
 	public ArrayList<ComputerDTO> findAll() throws SqlCommandeException{

@@ -43,8 +43,8 @@ public class ComputerDAO {
 			+ "WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY ";
 	private static final String SQL_COUNT_SEARCH = 
 			"SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE UPPER(computer.name) LIKE UPPER(?) OR  UPPER(company.name) LIKE UPPER(?) "
-			+ "ORDER BY ";
+			+ "WHERE UPPER(computer.name) LIKE UPPER(?) OR  UPPER(company.name) LIKE UPPER(?) ";
+			
 	
 	private static final String SQL_LIMIT_OFFSET = " LIMIT ? OFFSET ?";
 	
@@ -172,10 +172,10 @@ public class ComputerDAO {
 		return computerMax;
 	}
 
-	public int countSearch(String search, OrderByMode mode, OrderByColumn column) {
+	public int countSearch(String search) {
 		int computerSearchMax = 0;
 		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_COUNT_SEARCH+" "+column.toString()+" "+mode.toString()+" "+SQL_LIMIT_OFFSET);) {
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_COUNT_SEARCH);) {
 			preparedStatement.setString(1, "%" + search + "%");
 			preparedStatement.setString(2, "%" + search + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();

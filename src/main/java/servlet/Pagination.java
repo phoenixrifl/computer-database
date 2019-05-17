@@ -60,7 +60,7 @@ public class Pagination {
 			}
 		}
 		
-		if (request.getParameter("asc") != null) {
+		if (request.getParameter("asc") == null) {
 			byMode = OrderByMode.ASC;
 		} else {
 			byMode = OrderByMode.DESC;
@@ -75,7 +75,7 @@ public class Pagination {
 			}
 			else {
 				computerDTO_list = computerService.find(search, limits, offset, byMode, byColumn);
-				nbTotal = computerService.countSearch(search, byMode, byColumn);
+				nbTotal = computerService.countSearch(search);
 
 			}
 			
@@ -108,7 +108,7 @@ public class Pagination {
 			pageCourante = nbTotalPage - 1;
 			page = String.valueOf(pageCourante);
 		}
-		
+		request.setAttribute("search", search);
 		request.setAttribute("orderbycolumn", orderByStr);
 		request.setAttribute("asc", byMode);
 		request.setAttribute("computers", computerDTO_list);
