@@ -31,8 +31,14 @@ public class Mappeur {
 		if (computer != null) {
 			computerDTO.setId(String.valueOf(computer.getId_()));
 			computerDTO.setName(computer.getName());
-			computerDTO.setIntroduced(String.valueOf(computer.getIntroduced()));
-			computerDTO.setDiscontinued(String.valueOf(computer.getDiscontinued()));
+			if(String.valueOf(computer.getIntroduced()).equals("null"))
+					computerDTO.setIntroduced("");
+			else
+				computerDTO.setIntroduced(String.valueOf(computer.getIntroduced()));
+			if(String.valueOf(computer.getDiscontinued()).equals("null"))
+				computerDTO.setDiscontinued("");
+			else
+				computerDTO.setDiscontinued(String.valueOf(computer.getDiscontinued()));
 			if (computer.getCompany() != null) {
 				computerDTO.setCompany_id(String.valueOf(computer.getCompany().getId_()));
 				if (computer.getCompany().getName() != null)

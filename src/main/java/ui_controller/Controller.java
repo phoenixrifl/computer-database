@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
+import persistence.OrderByColumn;
+import persistence.OrderByMode;
 import service.CompanyService;
 import service.ComputerService;
 public class Controller {
@@ -72,7 +74,7 @@ public class Controller {
 		int n = 0;
 		while(!next_page) {
 			if(computer_or_company == 1) {
-				ArrayList<ComputerDTO> computers = computerService.findAll(10, n);
+				ArrayList<ComputerDTO> computers = computerService.findAll(10, n, OrderByMode.ASC, OrderByColumn.ID);
 				computers.forEach(System.out::println);
 			}
 			else if(computer_or_company == 2) {

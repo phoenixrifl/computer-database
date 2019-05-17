@@ -9,6 +9,8 @@ import dto.Mappeur;
 import exception.SqlCommandeException;
 import modele.Computer;
 import persistence.ComputerDAO;
+import persistence.OrderByColumn;
+import persistence.OrderByMode;
 import validator.DateValidator;
 
 public class ComputerService {
@@ -93,13 +95,13 @@ public class ComputerService {
 		
 	}
 	
-	public ArrayList<ComputerDTO> findAll(int limits, int offset) throws SqlCommandeException{
-			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset);
+	public ArrayList<ComputerDTO> findAll(int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException{
+			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset, mode, column);
 			return this.mappeur.ModelToDTO(computers);
 	}
 
-	public ArrayList<ComputerDTO> find(String search, int limits, int offset) throws SqlCommandeException {
-		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, limits, offset);
+	public ArrayList<ComputerDTO> find(String search, int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
+		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, limits, offset, mode, column);
 		return this.mappeur.ModelToDTO(computers);
 	}
 	
