@@ -48,9 +48,8 @@ public class ComputerDAO {
 	
 	private static final String SQL_LIMIT_OFFSET = " LIMIT ? OFFSET ?";
 	
-	private static ComputerDAO instance = null;
 
-	private CompanyDAO companyDAO = CompanyDAO.getInstance();
+	private CompanyDAO companyDAO;
 	private static Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 
 	private static HikariConfig config = new HikariConfig();
@@ -67,16 +66,11 @@ public class ComputerDAO {
 		 config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
 		 hikariDataSource = new HikariDataSource(config);
 		 }
-	private ComputerDAO() {
+	public ComputerDAO(CompanyDAO companyDAO) {
+		this.companyDAO = companyDAO;
 	}
 
-	public final static ComputerDAO getInstance() {
-		if (ComputerDAO.instance == null) {
-			instance = new ComputerDAO();
-		}
-		return instance;
-	}
-
+	
 	public boolean create(Computer obj) {
 
 		try (Connection connect = hikariDataSource.getConnection();

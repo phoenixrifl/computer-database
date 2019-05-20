@@ -4,24 +4,19 @@ import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import dto.ComputerDTO;
 
+@Component
 public class ComputerValidator {
 
 	private static Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
-	private static ComputerValidator instance = null;
 
-	private ComputerValidator() {
+	public ComputerValidator() {
 
 	}
 
-	public final static ComputerValidator getInstance() {
-		if (ComputerValidator.instance == null) {
-			instance = new ComputerValidator();
-		}
-		return instance;
-	}
 
 	public boolean isAComputerValid(ComputerDTO computerdto) {
 		if (isAValidName(computerdto.getName()) == false) {

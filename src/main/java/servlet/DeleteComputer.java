@@ -8,7 +8,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import service.ComputerService;
+import springConfig.Config;
 
 /**
  * Servlet implementation class DeleteComputer
@@ -16,13 +22,22 @@ import service.ComputerService;
 @WebServlet(urlPatterns = "/deleteComputer")
 public class DeleteComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private ComputerService computerService = ComputerService.getInstance();
+	private ComputerService computerService;
+	protected final ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 
     /**
      * @see HttpServlet#HttpServlet()
      */
     public DeleteComputer() {
         super();
+    }
+    
+    
+    @Override
+    public void init() throws ServletException{
+    	WebApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+    	computerService = applicationContext.getBean(ComputerService.class);
+
     }
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

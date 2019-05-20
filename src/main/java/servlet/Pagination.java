@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
@@ -13,9 +14,24 @@ import persistence.OrderByColumn;
 import persistence.OrderByMode;
 import service.ComputerService;
 
+@Component
 public class Pagination {
 	private static Logger logger = LoggerFactory.getLogger(Pagination.class);
-	private ComputerService computerService = ComputerService.getInstance();
+	private ComputerService computerService;
+
+	public Pagination() {
+		
+	}
+
+	
+	public ComputerService getComputerService() {
+		return computerService;
+	}
+
+
+	public void setComputerService(ComputerService computerService) {
+		this.computerService = computerService;
+	}
 
 
 	public HttpServletRequest doPage(HttpServletRequest request) {
@@ -70,12 +86,12 @@ public class Pagination {
 		int nbTotal = 0;
 		try {
 			if (search == null || search.isEmpty() || search.equals("dashboard")) {
-				computerDTO_list = computerService.findAll(limits, offset, byMode, byColumn);
-				nbTotal = computerService.count();
+				computerDTO_list = getComputerService().findAll(limits, offset, byMode, byColumn);
+				nbTotal = getComputerService().count();
 			}
 			else {
-				computerDTO_list = computerService.find(search, limits, offset, byMode, byColumn);
-				nbTotal = computerService.countSearch(search);
+				computerDTO_list = getComputerService().find(search, limits, offset, byMode, byColumn);
+				nbTotal = getComputerService().countSearch(search);
 
 			}
 			

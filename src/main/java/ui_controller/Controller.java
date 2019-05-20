@@ -14,20 +14,13 @@ public class Controller {
 	private CompanyService companyService;
 	private ComputerService computerService;
 	
-	private static Controller instance = null;
 	
-	private Controller() {
-		this.companyService = CompanyService.getInstance();
-		this.computerService = ComputerService.getInstance();
+	public Controller(CompanyService companyService, ComputerService computerService) {
+		this.companyService = companyService;
+		this.computerService = computerService;
 		
 	}
 	
-	public final static Controller getInstance() {
-		if(Controller.instance == null) {
-			instance = new Controller();
-		}
-		return instance;
-	}
 	
 	public void action() throws SqlCommandeException {
 		boolean play = true;

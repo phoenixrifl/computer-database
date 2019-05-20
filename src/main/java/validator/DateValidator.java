@@ -4,24 +4,19 @@ import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import modele.Computer;
 
+@Component
 public class DateValidator {
 
 	private static Logger logger = LoggerFactory.getLogger(DateValidator.class);
-	private static DateValidator instance = null;
 
-	private DateValidator() {
+	public DateValidator() {
 
 	}
 
-	public final static DateValidator getInstance() {
-		if (DateValidator.instance == null) {
-			instance = new DateValidator();
-		}
-		return instance;
-	}
 	public boolean dateIsValid(Computer computer) {
 		LocalDate introduced = computer.getIntroduced(), discontinued = computer.getDiscontinued();
 		boolean isValid = false;

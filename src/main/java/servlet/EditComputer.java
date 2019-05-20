@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
@@ -26,10 +28,10 @@ import validator.ComputerValidator;
 @WebServlet(urlPatterns = "/editComputer")
 public class EditComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private ComputerService computerService = ComputerService.getInstance();
-	private CompanyService companyService = CompanyService.getInstance();
+	private ComputerService computerService;
+	private CompanyService companyService;
 	private static Logger logger = LoggerFactory.getLogger(EditComputer.class);
-	private ComputerValidator computerValidator = ComputerValidator.getInstance();
+	private ComputerValidator computerValidator;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -37,6 +39,16 @@ public class EditComputer extends HttpServlet {
     public EditComputer() {
         super();
         // TODO Auto-generated constructor stub
+    }
+    
+    
+    @Override
+    public void init() throws ServletException{
+    	WebApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+    	companyService = applicationContext.getBean(CompanyService.class);
+    	computerService = applicationContext.getBean(ComputerService.class);
+    	computerValidator = applicationContext.getBean(ComputerValidator.class);
+
     }
 
 	/**
