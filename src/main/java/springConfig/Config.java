@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@ComponentScan("com.excilys.cdb")
+@ComponentScan(basePackages = {"service, persistence, dto, validator"})
 public class Config {
 
 }

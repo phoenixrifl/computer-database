@@ -67,8 +67,8 @@ public class Controller {
 		int n = 0;
 		while(!next_page) {
 			if(computer_or_company == 1) {
-				ArrayList<ComputerDTO> computers = computerService.findAll(10, n, OrderByMode.ASC, OrderByColumn.ID);
-				computers.forEach(System.out::println);
+		//		ArrayList<ComputerDTO> computers = computerService.findAll(10, n, OrderByMode.ASC, OrderByColumn.ID);
+	//			computers.forEach(System.out::println);
 			}
 			else if(computer_or_company == 2) {
 				ArrayList<CompanyDTO> companies = companyService.findAll(10,n);

@@ -9,8 +9,7 @@ import dto.Mappeur;
 import exception.SqlCommandeException;
 import modele.Computer;
 import persistence.ComputerDAO;
-import persistence.OrderByColumn;
-import persistence.OrderByMode;
+import servlet.model.Pagination;
 import validator.DateValidator;
 
 @Service
@@ -88,13 +87,13 @@ public class ComputerService {
 		
 	}
 	
-	public ArrayList<ComputerDTO> findAll(int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException{
-			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset, mode, column);
+	public ArrayList<ComputerDTO> findAll(Pagination pagination) throws SqlCommandeException{
+			ArrayList<Computer> computers = this.computerDAO.findAll(pagination);
 			return this.mappeur.ModelToDTO(computers);
 	}
 
-	public ArrayList<ComputerDTO> find(String search, int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
-		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, limits, offset, mode, column);
+	public ArrayList<ComputerDTO> find(String search, Pagination pagination) throws SqlCommandeException {
+		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, pagination);
 		return this.mappeur.ModelToDTO(computers);
 	}
 	

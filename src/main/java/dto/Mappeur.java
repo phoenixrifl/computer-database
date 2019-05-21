@@ -5,26 +5,21 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import exception.DateFormatException;
 import modele.Company;
 import modele.Computer;
-
+@Component
 public class Mappeur {
 
-	private static Mappeur instance = null;
 	private static Logger logger = LoggerFactory.getLogger(Mappeur.class);
 
-	private Mappeur() {
+	public Mappeur() {
 
 	}
 
-	public final static Mappeur getInstance() {
-		if (Mappeur.instance == null) {
-			instance = new Mappeur();
-		}
-		return instance;
-	}
+
 
 	public ComputerDTO ModelToDTO(Computer computer) {
 		ComputerDTO computerDTO = new ComputerDTO();

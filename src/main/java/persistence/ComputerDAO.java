@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -18,7 +19,9 @@ import com.zaxxer.hikari.HikariDataSource;
 import exception.SqlCommandeException;
 import modele.Company;
 import modele.Computer;
+import servlet.model.Pagination;
 
+@Component
 public class ComputerDAO {
 
 	private static final String SQL_INSERT = 
@@ -221,15 +224,14 @@ public class ComputerDAO {
 		return computers;
 	}
 
-	public ArrayList<Computer> findAll(int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
+	public ArrayList<Computer> findAll(Pagination pagination) throws SqlCommandeException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer computer = null;
 
 		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE+" "+column.toString()+" "+mode.toString()+" "+SQL_LIMIT_OFFSET)) {
-
-			preparedStatement.setLong(1, limits);
-			preparedStatement.setLong(2, offset);
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE+" "+pagination.getByColumn().toString()+" "+pagination.getByMode().toString()+" "+SQL_LIMIT_OFFSET)) {
+			preparedStatement.setLong(1, pagination.getLimit());
+			preparedStatement.setLong(2, pagination.getOffset());
 			ResultSet result = preparedStatement.executeQuery();
 			while (result.next()) {
 				Date introduced = result.getDate("introduced");
@@ -255,17 +257,17 @@ public class ComputerDAO {
 		return computers;
 	}
 
-	public ArrayList<Computer> searchComputers(String search, int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
+	public ArrayList<Computer> searchComputers(String search, Pagination pagination) throws SqlCommandeException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Computer computer = null;
 
 		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SEARCH+" "+column.toString()+" "+mode.toString()+" "+SQL_LIMIT_OFFSET)) {
+				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SEARCH+" "+pagination.getByColumn().toString()+" "+pagination.getByMode().toString()+" "+SQL_LIMIT_OFFSET)) {
 			
 			preparedStatement.setString(1, "%" + search + "%");
 			preparedStatement.setString(2, "%" + search + "%");
-			preparedStatement.setLong(3, limits);
-			preparedStatement.setLong(4, offset);
+			preparedStatement.setLong(3, pagination.getLimit());
+			preparedStatement.setLong(4, pagination.getOffset());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
