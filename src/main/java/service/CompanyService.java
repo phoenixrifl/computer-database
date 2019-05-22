@@ -2,32 +2,26 @@ package service;
 
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Service;
+
 import dto.CompanyDTO;
 import dto.Mappeur;
 import exception.SqlCommandeException;
 import modele.Company;
 import persistence.CompanyDAO;
 
-
+@Service
 public class CompanyService {
 
 	private CompanyDAO companyDAO;
 	private Mappeur mappeur;
 	
-	private static CompanyService instance = null;
 	
-	private CompanyService() {
-		this.companyDAO = CompanyDAO.getInstance();
-		this.mappeur = Mappeur.getInstance();
+	public CompanyService(CompanyDAO companyDAO, Mappeur mappeur) {
+		this.companyDAO = companyDAO;
+		this.mappeur = mappeur;
 	}
 	
-	public final static CompanyService getInstance() {
-		if(CompanyService.instance == null) {
-			instance = new CompanyService();
-		}
-		return instance;
-	}
-
 
 	public CompanyDTO find(long id) throws SqlCommandeException {
 		Company company = this.companyDAO.find(id);

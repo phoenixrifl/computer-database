@@ -1,9 +1,9 @@
-//package test.java;
 //
 //import org.junit.Before;
 //import org.junit.Test;
 //
-//import main.java.persistence.CompanyDAO;
+//import exception.SqlCommandeException;
+//import persistence.CompanyDAO;
 //
 //public class CompanyDAOTest {
 //	
@@ -15,7 +15,7 @@
 //	}
 //	
 //	@Test
-//	public void TestFindAll() {
+//	public void TestFindAll() throws SqlCommandeException {
 //		companyDAO.findAll(1,10);
 //	}
 //	

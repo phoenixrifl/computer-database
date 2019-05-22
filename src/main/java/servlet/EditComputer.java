@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,32 +15,14 @@ import org.slf4j.LoggerFactory;
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
-import service.CompanyService;
-import service.ComputerService;
-import validator.ComputerValidator;
 
-/**
- * Servlet implementation class EditComputer
- */
+
 @WebServlet(urlPatterns = "/editComputer")
-public class EditComputer extends HttpServlet {
+public class EditComputer extends Servlet {
 	private static final long serialVersionUID = 1L;
-	private ComputerService computerService = ComputerService.getInstance();
-	private CompanyService companyService = CompanyService.getInstance();
 	private static Logger logger = LoggerFactory.getLogger(EditComputer.class);
-	private ComputerValidator computerValidator = ComputerValidator.getInstance();
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public EditComputer() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		request.setAttribute("id", request.getParameter("id"));
@@ -62,9 +43,6 @@ public class EditComputer extends HttpServlet {
 		rd.forward(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = "", name = "", dateIntroduced = "", dateDiscontinued = "", idCompanie = "";
 		

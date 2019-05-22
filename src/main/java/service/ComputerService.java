@@ -2,38 +2,30 @@ package service;
 
 import java.util.ArrayList;
 
-
+import org.springframework.stereotype.Service;
 
 import dto.ComputerDTO;
 import dto.Mappeur;
 import exception.SqlCommandeException;
 import modele.Computer;
 import persistence.ComputerDAO;
-import persistence.OrderByColumn;
-import persistence.OrderByMode;
+import servlet.model.Pagination;
 import validator.DateValidator;
 
+@Service
 public class ComputerService {
 	
 	private ComputerDAO computerDAO;
 	private Mappeur mappeur;
 	private DateValidator dateValidator;
 	
-	private static ComputerService instance = null;
 
-	private ComputerService() {
-		this.computerDAO = ComputerDAO.getInstance();
-		this.mappeur = Mappeur.getInstance();
-		this.dateValidator = DateValidator.getInstance();
+	public ComputerService(ComputerDAO computerDAO, Mappeur mappeur, DateValidator dateValidator) {
+		this.computerDAO = computerDAO;
+		this.mappeur = mappeur;
+		this.dateValidator = dateValidator;
 	}
-	
-	public final static ComputerService getInstance() {
-		if(ComputerService.instance == null) {
-			instance = new ComputerService();
-		}
-		return instance;
-	}
-	
+		
 	public boolean createDTO(String computer_dto) {
 		String [] computer = computer_dto.split(",");
 		return create(new ComputerDTO
@@ -95,13 +87,13 @@ public class ComputerService {
 		
 	}
 	
-	public ArrayList<ComputerDTO> findAll(int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException{
-			ArrayList<Computer> computers = this.computerDAO.findAll(limits, offset, mode, column);
+	public ArrayList<ComputerDTO> findAll(Pagination pagination) throws SqlCommandeException{
+			ArrayList<Computer> computers = this.computerDAO.findAll(pagination);
 			return this.mappeur.ModelToDTO(computers);
 	}
 
-	public ArrayList<ComputerDTO> find(String search, int limits, int offset, OrderByMode mode, OrderByColumn column) throws SqlCommandeException {
-		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, limits, offset, mode, column);
+	public ArrayList<ComputerDTO> find(String search, Pagination pagination) throws SqlCommandeException {
+		ArrayList<Computer> computers = this.computerDAO.searchComputers(search, pagination);
 		return this.mappeur.ModelToDTO(computers);
 	}
 	

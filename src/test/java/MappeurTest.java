@@ -1,13 +1,14 @@
-//package test.java;
 //
 //import static org.junit.Assert.assertNull;
 //
 //import org.junit.Before;
 //import org.junit.Test;
 //
-//import main.java.dto.CompanyDTO;
-//import main.java.dto.Mappeur;
-//import main.java.modele.Company;
+//import dto.CompanyDTO;
+//import dto.Mappeur;
+//import modele.Company;
+//
+//
 //
 //public class MappeurTest {
 //	private static Mappeur mappeur;

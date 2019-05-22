@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -16,6 +17,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import exception.SqlCommandeException;
 import modele.Company;
 
+
+@Component
 public class CompanyDAO {
 
 	private static final String SQL_PAGE = "SELECT * FROM company ORDER BY id LIMIT ? OFFSET ?";
@@ -24,7 +27,6 @@ public class CompanyDAO {
 	private static final String SQL_DELETE_COMPANY = "DELETE FROM company WHERE id= ?";
 	private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE company_id= ?";
 
-	private static CompanyDAO instance = null;
 
 	private static Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
 	private static HikariConfig config = new HikariConfig();
@@ -41,15 +43,9 @@ public class CompanyDAO {
 		 config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
 		 hikariDataSource = new HikariDataSource(config);
 		 }
-	private CompanyDAO() {
+	public CompanyDAO() {
 	}
 
-	public final static CompanyDAO getInstance() {
-		if (CompanyDAO.instance == null) {
-			instance = new CompanyDAO();
-		}
-		return instance;
-	}
 
 	public Company find(long id) throws SqlCommandeException {
 		Company tmp = null;

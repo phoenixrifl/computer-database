@@ -14,20 +14,13 @@ public class Controller {
 	private CompanyService companyService;
 	private ComputerService computerService;
 	
-	private static Controller instance = null;
 	
-	private Controller() {
-		this.companyService = CompanyService.getInstance();
-		this.computerService = ComputerService.getInstance();
+	public Controller(CompanyService companyService, ComputerService computerService) {
+		this.companyService = companyService;
+		this.computerService = computerService;
 		
 	}
 	
-	public final static Controller getInstance() {
-		if(Controller.instance == null) {
-			instance = new Controller();
-		}
-		return instance;
-	}
 	
 	public void action() throws SqlCommandeException {
 		boolean play = true;
@@ -74,8 +67,8 @@ public class Controller {
 		int n = 0;
 		while(!next_page) {
 			if(computer_or_company == 1) {
-				ArrayList<ComputerDTO> computers = computerService.findAll(10, n, OrderByMode.ASC, OrderByColumn.ID);
-				computers.forEach(System.out::println);
+		//		ArrayList<ComputerDTO> computers = computerService.findAll(10, n, OrderByMode.ASC, OrderByColumn.ID);
+	//			computers.forEach(System.out::println);
 			}
 			else if(computer_or_company == 2) {
 				ArrayList<CompanyDTO> companies = companyService.findAll(10,n);
