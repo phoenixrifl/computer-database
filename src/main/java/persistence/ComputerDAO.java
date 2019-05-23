@@ -92,11 +92,11 @@ public class ComputerDAO {
 		return computerMax;
 	}
 
-	public int countSearch(String search) throws DataAccessException {
+	public int countSearch(Pagination pagination) throws DataAccessException {
 		int computerSearchMax = 0;
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("computerName", "%" + search + "%");
-		mapSqlParameterSource.addValue("companyName", "%" + search + "%");
+		mapSqlParameterSource.addValue("computerName", "%" + pagination.getSearch() + "%");
+		mapSqlParameterSource.addValue("companyName", "%" + pagination.getSearch() + "%");
 
 		computerSearchMax = jdbcTemplate.queryForObject(SQL_COUNT_SEARCH, mapSqlParameterSource, Integer.class);
 		return computerSearchMax;
@@ -120,10 +120,10 @@ public class ComputerDAO {
 		return computers;
 	}
 
-	public ArrayList<Computer> searchComputers(String search, Pagination pagination) throws DataAccessException {
+	public ArrayList<Computer> searchComputers(Pagination pagination) throws DataAccessException {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("computerName", "%" + search + "%");
-		mapSqlParameterSource.addValue("companyName", "%" + search + "%");
+		mapSqlParameterSource.addValue("computerName", "%" + pagination.getSearch() + "%");
+		mapSqlParameterSource.addValue("companyName", "%" + pagination.getSearch() + "%");
 		mapSqlParameterSource.addValue("limit", pagination.getLimit());
 		mapSqlParameterSource.addValue("offset", pagination.getOffset());
 		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();

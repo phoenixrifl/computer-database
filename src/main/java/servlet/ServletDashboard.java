@@ -1,124 +1,95 @@
 package servlet;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
 import persistence.OrderByColumn;
 import persistence.OrderByMode;
+import service.ComputerService;
 import servlet.model.Pagination;
 
-@WebServlet(urlPatterns = "/dashboard")
+@Controller
+@SessionAttributes(value = ServletDashboard.PAGINATION, types = { Pagination.class })
 public class ServletDashboard extends Servlet {
+
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(ServletDashboard.class);
-	private Pagination pagination = new Pagination();
+	protected static final String PAGINATION = "pagination";
+	private ComputerService computerService;
 
+	public ServletDashboard(ComputerService computerService) {
+		this.computerService = computerService;
+	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@ModelAttribute(PAGINATION)
+	public Pagination paginationInstance() {
+		return new Pagination();
+	}
 
-		String search = request.getParameter("search");
-
-		if (request.getParameter("page") == null) {
-			this.pagination.setPage(1);
+	@GetMapping(value = { "/", "/dashboard" })
+	public String getParam(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "limit", required = false) Integer limit,
+			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "orderbycolumn", required = false) String orderbycolumn,
+			@RequestParam(value = "asc", required = false) String asc,
+			@ModelAttribute(PAGINATION) Pagination pagination, Model model) throws SqlCommandeException {
+		if (page == null) {
+			pagination.setPage(1);
 		} else {
-			this.pagination.setPage(Integer.parseInt(request.getParameter("page")));
+			pagination.setPage(page);
+		}
+		if (search != null) {
+			pagination.setSearch(search);
 		}
 
-		if (request.getParameter("limit") == null) {
-			this.pagination.setLimit(10);
+		if (limit == null) {
+			pagination.setLimit(10);
 		} else {
-			this.pagination.setLimit(Integer.parseInt(request.getParameter("limit")));
-			this.pagination.setOffset(pagination.getLimit()*(pagination.getPage()-1));
+			pagination.setLimit(limit);
+			pagination.setOffset(pagination.getLimit() * (pagination.getPage() - 1));
 		}
-		
-		String orderByStr = request.getParameter("orderbycolumn");
 
-		for(OrderByColumn ob : OrderByColumn.values()) {
-			if(ob.toString().equals(orderByStr)) {
-				this.pagination.setByColumn(ob);
+		if (orderbycolumn != null) {
+			for (OrderByColumn ob : OrderByColumn.values()) {
+				if (ob.toString().equals(orderbycolumn)) {
+					pagination.setByColumn(ob);
+				}
 			}
+		} else {
+			pagination.setByColumn(OrderByColumn.ID);
 		}
-		
-		
-		if(request.getParameter("asc")==null || request.getParameter("asc").isEmpty() ||!request.getParameter("asc").equals("DESC")) {
-			this.pagination.setByMode(OrderByMode.ASC);
+
+		if (asc == null || asc.equals("DESC") || asc.equals("")) {
+			pagination.setByMode(OrderByMode.ASC);
+
+		} else {
+			pagination.setByMode(OrderByMode.DESC);
 
 		}
-			else {
-				this.pagination.setByMode(OrderByMode.DESC);
-
-			}
-
+		pagination.pageview();
 		ArrayList<ComputerDTO> computerDTO_list = null;
-		try {
-			if (search == null || search.isEmpty() || search.equals("dashboard")) {
-				computerDTO_list = computerService.findAll(this.pagination);
-				this.pagination.setNbTotalComputers(computerService.count());
-			}
-			else {
-				computerDTO_list = computerService.find(search, this.pagination);
-				this.pagination.setNbTotalComputers(computerService.countSearch(search));
-
-			}
-			
-		} catch (SqlCommandeException e) {
-			logger.error("findAll " + e.getMessage());
-
-		}
-		this.pagination.setNbTotalPages(this.pagination.getNbTotalComputers() / this.pagination.getLimit());
-		if ((this.pagination.getNbTotalComputers() % this.pagination.getLimit()) != 0)
-			this.pagination.setNbTotalPages(this.pagination.getNbTotalPages()+1);
-
-		int begin = 0, end = 0;
-		if (this.pagination.getNbTotalPages() <= 5) {
-			begin = 1;
-			end = this.pagination.getNbTotalPages();
+		int nbTotalComputers = 0;
+		if (search == null || search.isEmpty() || search.equals("dashboard")) {
+			computerDTO_list = computerService.findAll(pagination);
+			nbTotalComputers = computerService.count();
 		} else {
-			if (this.pagination.getPage() <= 3) {
-				begin = 1;
-				end = 5;
-			} else if (this.pagination.getPage() >= this.pagination.getNbTotalPages() - 3) {
-				begin = this.pagination.getNbTotalPages() - 6;
-				end = this.pagination.getNbTotalPages();
-			} else {
-				begin = this.pagination.getPage() - 3;
-				end = this.pagination.getPage() + 3;
-			}
-		}
+			computerDTO_list = computerService.find(pagination);
+			nbTotalComputers = computerService.countSearch(pagination);
 
-		if (this.pagination.getPage() > this.pagination.getNbTotalPages()) {
-			this.pagination.setPage(this.pagination.getNbTotalPages() - 1);
 		}
-		request.setAttribute("search", search);
-		request.setAttribute("orderbycolumn", this.pagination.getByColumn());
-		request.setAttribute("asc", this.pagination.getByMode());
-		request.setAttribute("computers", computerDTO_list);
-		request.setAttribute("taille", this.pagination.getNbTotalComputers());
-		request.setAttribute("begin", begin);
-		request.setAttribute("end", end);
-		request.setAttribute("page", this.pagination.getPage());
-		request.setAttribute("limit", this.pagination.getLimit());
-		
-
-		try {
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp");
-			requestDispatcher.forward(request, response);
-
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
+		pagination.setNbTotalComputers(nbTotalComputers);
+		model.addAttribute("computers", computerDTO_list);
+		return "dashboard";
 
 	}
 
