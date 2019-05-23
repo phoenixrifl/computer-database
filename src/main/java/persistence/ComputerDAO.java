@@ -27,8 +27,8 @@ public class ComputerDAO {
 			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY ";
 	private static final String SQL_SELECT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
 	private static final String SQL_COUNT = "SELECT COUNT(*) AS total FROM computer";
-	private static final String SQL_SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name "
-			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id "
+	private static final String SQL_SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company_id, company.name "
+			+ "FROM computer LEFT JOIN company ON company_id = company.id "
 			+ "WHERE computer.name LIKE :computerName OR company.name LIKE :companyName ORDER BY ";
 	private static final String SQL_COUNT_SEARCH = "SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id "
 			+ "WHERE UPPER(computer.name) LIKE UPPER(:computerName) OR  UPPER(company.name) LIKE UPPER(:companyName) ";

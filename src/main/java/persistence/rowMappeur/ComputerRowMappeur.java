@@ -14,7 +14,7 @@ public class ComputerRowMappeur implements RowMapper<Computer> {
 		return new Computer(rs.getInt("computer.id"), rs.getString("computer.name"),
 				(rs.getDate("introduced") != null) ? rs.getDate("introduced").toLocalDate() : null,
 				(rs.getDate("discontinued") != null) ? rs.getDate("discontinued").toLocalDate() : null,
-				rs.getInt("computer.company_id"), rs.getString("company.name"));
+				rs.getInt("company_id"), rs.getString("company.name"));
 	}
 
 }
