@@ -26,8 +26,6 @@ public class ConfigMvc implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("static/css/**").addResourceLocations("/css/");
-		registry.addResourceHandler("static/js/**").addResourceLocations("/js/");
-		registry.addResourceHandler("static/fonts/**").addResourceLocations("/fonts/");
+		registry.addResourceHandler("/static/**").addResourceLocations("/static/");
 	}
 }

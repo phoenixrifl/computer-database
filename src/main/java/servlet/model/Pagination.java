@@ -18,12 +18,16 @@ public class Pagination {
 	public Pagination() {
 		this.page = 1;
 		this.limit = 10;
+		this.begin = 1;
+		this.end = 1;
 		this.offset = limit * (page - 1);
 		this.byColumn = OrderByColumn.ID;
 		this.byMode = OrderByMode.ASC;
+
 	}
 
 	public void pageview() {
+
 		this.nbTotalPages = this.nbTotalComputers / this.limit;
 		if ((this.nbTotalComputers % this.limit) != 0)
 			this.nbTotalPages = this.nbTotalPages + 1;
@@ -36,7 +40,7 @@ public class Pagination {
 				this.begin = 1;
 				this.end = 5;
 			} else if (this.page >= this.nbTotalPages - 3) {
-				this.begin = this.nbTotalPages - 6;
+				this.begin = this.nbTotalPages - 5;
 				this.end = this.nbTotalPages;
 			} else {
 				this.begin = this.page - 3;
@@ -127,6 +131,13 @@ public class Pagination {
 
 	public void setSearch(String search) {
 		this.search = search;
+	}
+
+	@Override
+	public String toString() {
+		return "Pagination [page=" + page + ", limit=" + limit + ", offset=" + offset + ", nbTotalComputers="
+				+ nbTotalComputers + ", nbTotalPages=" + nbTotalPages + ", byColumn=" + byColumn + ", byMode=" + byMode
+				+ ", begin=" + begin + ", end=" + end + ", search=" + search + "]";
 	}
 
 }

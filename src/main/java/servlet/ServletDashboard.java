@@ -43,40 +43,49 @@ public class ServletDashboard extends Servlet {
 			@RequestParam(value = "orderbycolumn", required = false) String orderbycolumn,
 			@RequestParam(value = "asc", required = false) String asc,
 			@ModelAttribute(PAGINATION) Pagination pagination, Model model) throws SqlCommandeException {
+
 		if (page == null) {
 			pagination.setPage(1);
 		} else {
 			pagination.setPage(page);
+
 		}
 		if (search != null) {
 			pagination.setSearch(search);
+
 		}
 
 		if (limit == null) {
 			pagination.setLimit(10);
+
 		} else {
 			pagination.setLimit(limit);
 			pagination.setOffset(pagination.getLimit() * (pagination.getPage() - 1));
+
 		}
 
 		if (orderbycolumn != null) {
 			for (OrderByColumn ob : OrderByColumn.values()) {
 				if (ob.toString().equals(orderbycolumn)) {
 					pagination.setByColumn(ob);
+
 				}
 			}
 		} else {
 			pagination.setByColumn(OrderByColumn.ID);
+
 		}
 
-		if (asc == null || asc.equals("DESC") || asc.equals("")) {
-			pagination.setByMode(OrderByMode.ASC);
-
+		if (asc != null) {
+			for (OrderByMode ob : OrderByMode.values()) {
+				if (ob.toString().equals(orderbycolumn)) {
+					pagination.setByMode(ob);
+				}
+			}
 		} else {
-			pagination.setByMode(OrderByMode.DESC);
-
+			pagination.setByMode(OrderByMode.ASC);
 		}
-		pagination.pageview();
+
 		ArrayList<ComputerDTO> computerDTO_list = null;
 		int nbTotalComputers = 0;
 		if (search == null || search.isEmpty() || search.equals("dashboard")) {
@@ -88,7 +97,10 @@ public class ServletDashboard extends Servlet {
 
 		}
 		pagination.setNbTotalComputers(nbTotalComputers);
+		pagination.pageview();
+
 		model.addAttribute("computers", computerDTO_list);
+
 		return "dashboard";
 
 	}

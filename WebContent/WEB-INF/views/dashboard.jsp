@@ -16,7 +16,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
+			<a class="navbar-brand" href="dashboard?search="> Application - Computer
 				Database </a>
 		</div>
 	</header>
@@ -60,33 +60,33 @@
 						</span></th>
 
 						<th>Computer name<a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a> <a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<th>Introduced date<a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Discontinued Date -->
 						<th>Discontinued date<a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Company -->
 						<th>Company<a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=company.name&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${pagination.getPage()}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=company.name&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 
