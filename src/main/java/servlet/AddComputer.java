@@ -1,76 +1,52 @@
 package servlet;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
+import service.CompanyService;
+import service.ComputerService;
+import validator.ComputerValidator;
 
-
-@WebServlet(urlPatterns = "/addComputer")
+@Controller
 public class AddComputer extends Servlet {
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(AddComputer.class);
+	private CompanyService companyService;
+	private ComputerService computerService;
+	private ComputerValidator computerValidator;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<CompanyDTO> companyDTO_list =null;
-		try {
-			companyDTO_list = companyService.findAll();
-		} catch (SqlCommandeException e) {
-			logger.error("findAll "+e.getMessage());
-		}
-		request.setAttribute("listCompany", companyDTO_list);
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
-		rd.forward(request, response);	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String name = "", dateIntroduced = "", dateDiscontinued = "", idCompanie = "";
-		if(request.getParameter("computerName")!=null)
-			
-			 name = request.getParameter("computerName");
-			
-		
-		if(request.getParameter("introduced")!=null && request.getParameter("introduced")!="")
-			dateIntroduced = request.getParameter("introduced");
-		
-		if(request.getParameter("discontinued")!=null && request.getParameter("discontinued")!="")
-			dateDiscontinued = request.getParameter("discontinued");
-		
-		if(request.getParameter("companyId")!=null)
-			idCompanie = request.getParameter("companyId");
-		
-		
-		ArrayList<CompanyDTO> companyDTO_list=null;
-		try {
-			companyDTO_list = companyService.findAll();
-		} catch (SqlCommandeException e) {
-			logger.error("findAll "+e.getMessage());
-		}
-		request.setAttribute("listCompany", companyDTO_list);
-		ComputerDTO computerDTO = new ComputerDTO(name, dateIntroduced, dateDiscontinued, idCompanie);
-		if(computerValidator.isAComputerValid(computerDTO)) {
-			computerService.create(computerDTO);
-			request.setAttribute("reussite", "Insertion reussite");
-			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
-			rd.forward(request, response);
-		}
-		else {
-			request.setAttribute("echec", "Echec insertion");
-			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
-			rd.forward(request, response);
-		}
-		
-				
+	public AddComputer(ComputerService computerService, CompanyService companyService,
+			ComputerValidator computerValidator) {
+		this.computerService = computerService;
+		this.companyService = companyService;
+		this.computerValidator = computerValidator;
 	}
 
+	@GetMapping(value = { "/addComputer" })
+	public String doGet(Model model) throws SqlCommandeException {
+		model.addAttribute("listCompany", companyService.findAll());
+		return "addComputer";
+	}
+
+	@PostMapping(value = { "/addComputer" })
+	public RedirectView doPost(@RequestParam(value = "computerName", required = false) String computerName,
+			@RequestParam(value = "introduced", required = false) String introduced,
+			@RequestParam(value = "discontinued", required = false) String discontinued,
+			@RequestParam(value = "companyId", required = false) String companyId, Model model) {
+
+		ComputerDTO computerDTO = new ComputerDTO(computerName, introduced, discontinued, companyId);
+		if (computerValidator.isAComputerValid(computerDTO)) {
+			if (computerService.create(computerDTO))
+				model.addAttribute("reussite", "Insertion reussite");
+			else
+				model.addAttribute("echec", "Echec insertion");
+		}
+
+		return new RedirectView("dashboard");
+	}
 }

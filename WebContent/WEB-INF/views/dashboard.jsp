@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <!DOCTYPE html>
 <html>
@@ -16,31 +17,38 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="dashboard?search="><spring:message
+			 code="Application.name" text="Application - Computer Database"></spring:message>  </a>
+				<a class="nav navbar-brand navbar-right" href="dashboard?lang=FR" id="fr">
+					<spring:message code="application.langFR" text="French"></spring:message>
+				</a> 
+				<a class="nav navbar-brand navbar-right" href="dashboard?lang=EN" id="eng">
+					<spring:message code="application.langEN" text="English" ></spring:message>
+				</a>
+					
 		</div>
 	</header>
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${taille} Computers found</h1>
+			<h1 id="homeTitle">${pagination.getNbTotalComputers()}<spring:message code="computer.found" text=" Computers found"></spring:message></h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
 
-						<input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" /> 
-						<input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
+						<input type="search" id="searchbox" name="search" class="form-control" placeholder="<spring:message code="search.name" text="search name"></spring:message>" /> 
+						<input type="submit" id="searchsubmit" value="<spring:message code="filter.name" text="Filter by name"></spring:message>" class="btn btn-primary" />
+					
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addComputer"><spring:message code="add.Computer" text="Add Computer"></spring:message></a> <a class="btn btn-default" id="editComputer" href="#"
+						onclick="$.fn.toggleEditMode();"><spring:message code="computer.edit" text="Edit"></spring:message></a>
 				</div>
 			</div>
 		</div>
 
-		<form id="deleteForm" action="deleteComputer" method="POST">
+		<form id="deleteForm" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -59,34 +67,34 @@
 							</a>
 						</span></th>
 
-						<th>Computer name<a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.name&asc=ASC">
+						<th><spring:message code="computer.name" text="Computer Name"></spring:message><a
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a> <a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.name&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
-						<th>Introduced date<a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.introduced&asc=ASC">
+						<th><spring:message code="introduced.date" text="Introduced date"></spring:message><a
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.introduced&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date<a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.discontinued&asc=ASC">
+						<th><spring:message code="discontinued.date" text="Discontinued date"></spring:message><a
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=computer.discontinued&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Company -->
-						<th>Company<a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=company.name&asc=ASC">
+						<th><spring:message code="company" text="Company"></spring:message><a
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?page=${page}&PCparPage=${limit}&search=${search}&orderbycolumn=company.name&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 
@@ -116,21 +124,21 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="dashboard?page=${page-1}&PCparPage=${limit}&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}"
+				<li><a href="dashboard?page=${pagination.getPage()-1}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}"
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
-				<c:forEach begin="${begin}" end="${end}" varStatus="loop">
-					<li><a href="dashboard?page=${loop.index}&limit=${limit}&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}">${loop.index}</a></li>
+				<c:forEach begin="${pagination.getBegin()}" end="${pagination.getEnd()}" varStatus="loop">
+					<li><a href="dashboard?page=${loop.index}&limit=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}">${loop.index}</a></li>
 				</c:forEach>
-				<li><a href="dashboard?page=${page+1}&PCparPage=${limit}&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}"
+				<li><a href="dashboard?page=${pagination.getPage()+1}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?page=1&limit=10&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">10</a> 
-				<a href="dashboard?page=1&limit=50&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">50</a> 
-				<a href="dashboard?page=1&limit=100&search=${search}&orderbycolumn=${orderbycolumn}&asc=${asc}" class="btn btn-default">100</a>
+				<a href="dashboard?page=1&limit=10&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}" class="btn btn-default">10</a> 
+				<a href="dashboard?page=1&limit=50&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}" class="btn btn-default">50</a> 
+				<a href="dashboard?page=1&limit=100&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}" class="btn btn-default">100</a>
 			</div>
 		</div>
 	</footer>

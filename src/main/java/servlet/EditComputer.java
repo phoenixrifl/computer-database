@@ -1,87 +1,71 @@
 package servlet;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
+import service.CompanyService;
+import service.ComputerService;
+import validator.ComputerValidator;
 
-
-@WebServlet(urlPatterns = "/editComputer")
+@Controller
 public class EditComputer extends Servlet {
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(EditComputer.class);
+	private CompanyService companyService;
+	private ComputerService computerService;
+	private ComputerValidator computerValidator;
 
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		request.setAttribute("id", request.getParameter("id"));
-		request.setAttribute("computerName", request.getParameter("computerName"));
-		request.setAttribute("introduced", request.getParameter("introduced"));
-		request.setAttribute("discontinued", request.getParameter("discontinued"));
-		request.setAttribute("companyId", request.getParameter("companyId"));
-		
-		ArrayList<CompanyDTO> companyDTO_list=null;
-		try {
-			companyDTO_list = companyService.findAll();
-		} catch (SqlCommandeException e) {
-			logger.error("findAll "+e.getMessage());
-
-		}
-		request.setAttribute("listCompany", companyDTO_list);
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
-		rd.forward(request, response);
+	public EditComputer(ComputerService computerService, CompanyService companyService,
+			ComputerValidator computerValidator) {
+		this.companyService = companyService;
+		this.computerService = computerService;
+		this.computerValidator = computerValidator;
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String id = "", name = "", dateIntroduced = "", dateDiscontinued = "", idCompanie = "";
-		
-		if(request.getParameter("id")!=null)	
-			 id = request.getParameter("id");
-		
-		if(request.getParameter("computerName")!=null)	
-			 name = request.getParameter("computerName");	
-		
-		if(request.getParameter("introduced")!=null && request.getParameter("introduced")!="")
-			dateIntroduced = request.getParameter("introduced");
-		
-		if(request.getParameter("discontinued")!=null && request.getParameter("discontinued")!="")
-			dateDiscontinued = request.getParameter("discontinued");
-		
-		if(request.getParameter("companyId")!=null)
-			idCompanie = request.getParameter("companyId");
-		
-		
-		ArrayList<CompanyDTO> companyDTO_list=null;
-		try {
-			companyDTO_list = companyService.findAll();
-		} catch (SqlCommandeException e) {
-			logger.error("findAll "+e.getMessage());
+	@GetMapping(value = { "editComputer" })
+	public String doGet(@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "computerName", required = false) String computerName,
+			@RequestParam(value = "introduced", required = false) String introduced,
+			@RequestParam(value = "discontinued", required = false) String discontinued,
+			@RequestParam(value = "companyId", required = false) String companyId, Model model)
+			throws SqlCommandeException {
+
+		ArrayList<CompanyDTO> companyDTO_list = companyService.findAll();
+
+		model.addAttribute("id", id);
+		model.addAttribute("computerName", computerName);
+		model.addAttribute("introduced", introduced);
+		model.addAttribute("discontinued", discontinued);
+		model.addAttribute("companyId", companyId);
+		model.addAttribute("listCompany", companyDTO_list);
+
+		return "editComputer";
+	}
+
+	@PostMapping(value = { "editComputer" })
+	public RedirectView doPost(@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "computerName", required = false) String computerName,
+			@RequestParam(value = "introduced", required = false) String introduced,
+			@RequestParam(value = "discontinued", required = false) String discontinued,
+			@RequestParam(value = "companyId", required = false) String companyId, Model model) {
+		ComputerDTO computerDTO = new ComputerDTO(id, computerName, introduced, discontinued, companyId);
+		if (computerValidator.isAComputerValid(computerDTO)) {
+			computerService.update(computerDTO);
+			model.addAttribute("reussite", "Update reussi");
+		} else {
+			model.addAttribute("echec", "Echec Update");
 
 		}
-		request.setAttribute("listCompany", companyDTO_list);
-		ComputerDTO computerDTO = new ComputerDTO(id, name, dateIntroduced, dateDiscontinued, idCompanie);
-	
-		if(computerValidator.isAComputerValid(computerDTO)) {
-			computerService.update(computerDTO);
-			request.setAttribute("reussite", "Update reussi");
-			response.sendRedirect("dashboard");
-		}
-		else {
-			request.setAttribute("echec", "Echec Update");
-			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
-			rd.forward(request, response);
-		}
+		return new RedirectView("dashboard");
+
 	}
 
 }

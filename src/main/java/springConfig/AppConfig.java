@@ -15,7 +15,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @ComponentScan(basePackages = { "service, persistence, dto, validator" })
-public class Config {
+public class AppConfig {
 
 	@Bean
 	public DataSource dataSource(HikariConfig config) {

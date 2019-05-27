@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 
 <!DOCTYPE html>
 <html>
@@ -25,8 +27,13 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="dashboard"> <spring:message code="Application.name" text="Application - Computer Database"></spring:message> </a>
+			<a class="nav navbar-brand navbar-right" href="addComputer?lang=FR">
+					<spring:message code="application.langFR" text="French"></spring:message>
+				</a> 
+				<a class="nav navbar-brand navbar-right" href="addComputer?lang=EN">
+					<spring:message code="application.langEN" text="English"></spring:message>
+				</a>
 		</div>
 	</header>
 
@@ -39,28 +46,28 @@
 
 					<div class="alert alert-light" role="alert" id="insertionOk"></div>
 					<c:out value="${insertionOk}" />
-					<h1>Add Computer</h1>
+					<h1><spring:message code="Add.title" text="Add Computer"></spring:message></h1>
 					<form action="addComputer" method="POST">
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> <input
+								<label for="computerName"><spring:message code="computer.name" text="Computer Name"></spring:message></label> <input
 									type="text" class="form-control" id="computerName"
-									name="computerName" placeholder="Computer name">
+									name="computerName" placeholder="<spring:message code="computer.name" text="Computer Name"></spring:message>">
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
+								<label for="introduced"><spring:message code="introduced.date" text="Introduced date"></spring:message></label> <input
 									type="date" class="form-control" id="introduced"
-									name="introduced" placeholder="Introduced date"
+									name="introduced" placeholder="<spring:message code="introduced.date" text="Introduced date"></spring:message>"
 									pattern=(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}>
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label> <input
+								<label for="discontinued"><spring:message code="discontinued.date" text="Discontinued date"></spring:message></label> <input
 									type="date" class="form-control" id="discontinued"
-									name="discontinued" placeholder="Discontinued date"
+									name="discontinued" placeholder="<spring:message code="discontinued.date" text="Discontinued date"></spring:message>"
 									pattern=(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}>
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
+								<label for="companyId"><spring:message code="company" text="Company"></spring:message></label> <select
 									class="form-control" id="companyId" name="companyId">
 									<c:forEach items="${listCompany}" var="companies">
 
@@ -70,8 +77,8 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary" id="submit">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+							<input type="submit" value="<spring:message code="add" text="Add"></spring:message>" class="btn btn-primary" id="submit">
+							<spring:message code="Or" text="or"></spring:message> <a href="dashboard" class="btn btn-default"><spring:message code="cancel" text="Cancel"></spring:message></a>
 						</div>
 					</form>
 					<c:out value="${request.getContextPath}"></c:out>
