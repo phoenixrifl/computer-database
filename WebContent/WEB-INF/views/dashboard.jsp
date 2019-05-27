@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <!DOCTYPE html>
 <html>
@@ -16,27 +17,33 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard?search="> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="dashboard?search="><spring:message
+			 code="Application.name" text="Application - Computer Database"></spring:message>  </a>
+				<a class="nav navbar-brand navbar-right" href="dashboard?lang=FR" id="fr">
+					<spring:message code="application.langFR" text="French"></spring:message>
+				</a> 
+				<a class="nav navbar-brand navbar-right" href="dashboard?lang=EN" id="eng">
+					<spring:message code="application.langEN" text="English" ></spring:message>
+				</a>
+					
 		</div>
 	</header>
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${pagination.getNbTotalComputers()} Computers found</h1>
+			<h1 id="homeTitle">${pagination.getNbTotalComputers()}<spring:message code="computer.found" text=" Computers found"></spring:message></h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
 
-						<input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" /> 
-						<input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
+						<input type="search" id="searchbox" name="search" class="form-control" placeholder="<spring:message code="search.name" text="search name"></spring:message>" /> 
+						<input type="submit" id="searchsubmit" value="<spring:message code="filter.name" text="Filter by name"></spring:message>" class="btn btn-primary" />
 					
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addComputer"><spring:message code="add.Computer" text="Add Computer"></spring:message></a> <a class="btn btn-default" id="editComputer" href="#"
+						onclick="$.fn.toggleEditMode();"><spring:message code="computer.edit" text="Edit"></spring:message></a>
 				</div>
 			</div>
 		</div>
@@ -60,14 +67,14 @@
 							</a>
 						</span></th>
 
-						<th>Computer name<a
+						<th><spring:message code="computer.name" text="Computer Name"></spring:message><a
 							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a> <a
 							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
-						<th>Introduced date<a
+						<th><spring:message code="introduced.date" text="Introduced date"></spring:message><a
 							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
@@ -75,7 +82,7 @@
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date<a
+						<th><spring:message code="discontinued.date" text="Discontinued date"></spring:message><a
 							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
@@ -83,7 +90,7 @@
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Company -->
-						<th>Company<a
+						<th><spring:message code="company" text="Company"></spring:message><a
 							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name&asc=ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
