@@ -38,8 +38,7 @@ public class ConfigMvc implements WebMvcConfigurer {
 	@Bean("messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename("classpath:lang/lang");// cherche les fichiers dans le dossier resources/lang qui
-															// commencent par lang_
+		messageSource.setBasename("classpath:lang/lang");
 		messageSource.setUseCodeAsDefaultMessage(true);
 		return messageSource;
 	}
