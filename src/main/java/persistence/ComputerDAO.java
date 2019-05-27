@@ -1,295 +1,138 @@
 package persistence;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.sql.DataSource;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import exception.SqlCommandeException;
-import modele.Company;
 import modele.Computer;
+import persistence.rowMappeur.ComputerRowMappeur;
 import servlet.model.Pagination;
 
 @Component
 public class ComputerDAO {
 
-	private static final String SQL_INSERT = 
-			"INSERT INTO computer (id,name,introduced,discontinued,company_id) "
-			+ "VALUES (NULL,?,?,?,?);";
-	private static final String SQL_DELETE = 
-			"DELETE FROM computer WHERE id= ?";
-	private static final String SQL_SELECT_ONE = 
-			"SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id= ?";
-	private static final String SQL_UPDATE = 
-			"UPDATE computer SET name=?, introduced=?, discontinued=?, company_id=? WHERE id =";
-	private static final String SQL_PAGE = 
-			"SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name "
+	private static final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) "
+			+ "VALUES (NULL,:name,:introduced,:discontinued,:company_id);";
+	private static final String SQL_DELETE = "DELETE FROM computer WHERE id= :id";
+	private static final String SQL_SELECT_ONE = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id= :id";
+	private static final String SQL_UPDATE = "UPDATE computer SET name=:name, introduced=:introduced, discontinued=:discontinued, company_id=:company_id WHERE id =:id";
+	private static final String SQL_PAGE = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY ";
-	private static final String SQL_SELECT = 
-			"SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
-	private static final String SQL_COUNT = 
-			"SELECT COUNT(*) AS total FROM computer";
-	private static final String SQL_SEARCH = 
-			"SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name "
-			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY ";
-	private static final String SQL_COUNT_SEARCH = 
-			"SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE UPPER(computer.name) LIKE UPPER(?) OR  UPPER(company.name) LIKE UPPER(?) ";
-			
-	
-	private static final String SQL_LIMIT_OFFSET = " LIMIT ? OFFSET ?";
-	
+	private static final String SQL_SELECT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
+	private static final String SQL_COUNT = "SELECT COUNT(*) AS total FROM computer";
+	private static final String SQL_SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company_id, company.name "
+			+ "FROM computer LEFT JOIN company ON company_id = company.id "
+			+ "WHERE computer.name LIKE :computerName OR company.name LIKE :companyName ORDER BY ";
+	private static final String SQL_COUNT_SEARCH = "SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE UPPER(computer.name) LIKE UPPER(:computerName) OR  UPPER(company.name) LIKE UPPER(:companyName) ";
 
-	private CompanyDAO companyDAO;
-	private static Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
+	private static final String SQL_LIMIT_OFFSET = " LIMIT :limit OFFSET :offset";
 
-	private static HikariConfig config = new HikariConfig();
-	private static HikariDataSource hikariDataSource;
+	private DataSource dataSource;
 
-	 static {
-		 ResourceBundle bundle = ResourceBundle.getBundle("hikari");
-		 config.setDriverClassName(bundle.getString("driverClassName"));
-		 config.setJdbcUrl(bundle.getString("jdbcUrl"));
-		 config.setUsername(bundle.getString("username"));
-		 config.setPassword(bundle.getString("password"));
-		 config.addDataSourceProperty( "cachePrepStmts" , "true" );
-		 config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
-		 config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
-		 hikariDataSource = new HikariDataSource(config);
-		 }
-	public ComputerDAO(CompanyDAO companyDAO) {
-		this.companyDAO = companyDAO;
+	private NamedParameterJdbcTemplate jdbcTemplate;
+
+	public ComputerDAO(DataSource dataSource) {
+		this.dataSource = dataSource;
+		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-	
-	public boolean create(Computer obj) {
+	public boolean create(Computer obj) throws DataAccessException {
 
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_INSERT)) {
-			preparedStatement.setObject(1, obj.getName());
-			preparedStatement.setObject(2, Date.valueOf(obj.getIntroduced()));
-			preparedStatement.setObject(3, Date.valueOf(obj.getDiscontinued()));
-			if (obj.getCompany() == null || obj.getCompany().getId_() == 0)
-				preparedStatement.setObject(4, null);
-			else
-				preparedStatement.setObject(4, obj.getCompany().getId_());
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("name", obj.getName());
+		mapSqlParameterSource.addValue("introduced", obj.getIntroduced());
+		mapSqlParameterSource.addValue("discontinued", obj.getDiscontinued());
 
-			preparedStatement.executeUpdate();
-			return true;
+		Integer company_id = (Objects.isNull(obj.getCompany())) ? null : obj.getCompany().getId_();
+		mapSqlParameterSource.addValue("company_id", company_id);
+		return (jdbcTemplate.update(SQL_INSERT, mapSqlParameterSource) == 1) ? true : false;
 
-		} catch (SQLException ex) {
-			logger.error("impossible de créer cet ordinateur", ex);
-
-		}
-		return false;
 	}
 
-	public boolean delete(Computer obj) {
+	public boolean delete(Computer obj) throws DataAccessException {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("id", obj.getId_());
+		return (jdbcTemplate.update(SQL_DELETE, mapSqlParameterSource) == 1) ? true : false;
 
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_DELETE)) {
-			preparedStatement.setInt(1, obj.getId_());
-			preparedStatement.executeUpdate();
-			return true;
-		} catch (SQLException ex) {
-			logger.error("suppression impossible de l'ordinateur d'id" + obj.getId_());
-		}
-		return false;
 	}
 
-	public boolean update(Computer obj) {
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_UPDATE + obj.getId_() + ";")) {
-			preparedStatement.setObject(1, obj.getName());
-			preparedStatement.setObject(2, Date.valueOf(obj.getIntroduced()));
-			preparedStatement.setObject(3, Date.valueOf(obj.getDiscontinued()));
-			if (obj.getCompany() == null || obj.getCompany().getId_() == -1) {
-				preparedStatement.setObject(4, null);
-			} else {
-				preparedStatement.setObject(4, obj.getCompany().getId_());
-			}
-			preparedStatement.executeUpdate();
-			return true;
-		} catch (SQLException ex) {
-			logger.error("update impossible");
-		}
-		return false;
+	public boolean update(Computer obj) throws DataAccessException {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("id", obj.getId_());
+		mapSqlParameterSource.addValue("name", obj.getName());
+		mapSqlParameterSource.addValue("introduced", obj.getIntroduced());
+		mapSqlParameterSource.addValue("discontinued", obj.getDiscontinued());
+		Integer company_id = (Objects.isNull(obj.getCompany()) || obj.getCompany().getId_() == -1) ? null
+				: obj.getCompany().getId_();
+		mapSqlParameterSource.addValue("company_id", company_id);
+		return (jdbcTemplate.update(SQL_UPDATE, mapSqlParameterSource) == 1) ? true : false;
 	}
 
-	public Computer find(int id) {
-		Computer computer = new Computer();
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT_ONE)) {
-			preparedStatement.setInt(1, id);
-			ResultSet result = preparedStatement.executeQuery();
-			if (result.first()) {
-				Date introduced = result.getDate("computer.introduced");
-				LocalDate convDate = null;
-				if (introduced != null) {
-					convDate = introduced.toLocalDate();
-				}
-				Date discontinued = result.getDate("computer.discontinued");
-				LocalDate convDate1 = null;
-				if (discontinued != null) {
-					convDate1 = discontinued.toLocalDate();
-				}
-				computer = new Computer(result.getInt("computer.id"), result.getString("computer.name"), convDate,
-						convDate1, result.getInt("company.id"), result.getString("company.name"));
-
-			}
-
-		} catch (SQLException ex) {
-			logger.error("Ordinateur " + id + " introuvable ");
-		}
+	public Computer find(int id) throws DataAccessException {
+		Computer computer = null;
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("id", id);
+		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
+		computer = jdbcTemplate.queryForObject(SQL_SELECT_ONE, mapSqlParameterSource, computerRowMappeur);
 		return computer;
 	}
 
-	public int count() {
+	public int count() throws DataAccessException {
 		int computerMax = 0;
-		try (Connection connect = hikariDataSource.getConnection();
-				ResultSet resultSet = connect.createStatement().executeQuery(SQL_COUNT)) {
-			if (resultSet.first()) {
-				computerMax = resultSet.getInt("total");
-			}
-		} catch (SQLException ex) {
-			logger.error("echec count");
-		}
+		JdbcTemplate jdbcTemplate1 = new JdbcTemplate(dataSource);
+		computerMax = jdbcTemplate1.queryForObject(SQL_COUNT, Integer.class);
 		return computerMax;
 	}
 
-	public int countSearch(String search) {
+	public int countSearch(String search) throws DataAccessException {
 		int computerSearchMax = 0;
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_COUNT_SEARCH);) {
-			preparedStatement.setString(1, "%" + search + "%");
-			preparedStatement.setString(2, "%" + search + "%");
-			ResultSet resultSet = preparedStatement.executeQuery();
-			if (resultSet.first()) {
-				computerSearchMax = resultSet.getInt("total");
-			}
-		} catch (SQLException ex) {
-			logger.error("echec countSearch");
-		}
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("computerName", "%" + search + "%");
+		mapSqlParameterSource.addValue("companyName", "%" + search + "%");
 
+		computerSearchMax = jdbcTemplate.queryForObject(SQL_COUNT_SEARCH, mapSqlParameterSource, Integer.class);
 		return computerSearchMax;
 	}
 
-	public ArrayList<Computer> findAll() throws SqlCommandeException {
-		ArrayList<Computer> computers = new ArrayList<Computer>();
-
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT)) {
-			ResultSet result = preparedStatement.executeQuery();
-			while (result.next()) {
-				Date introduced = result.getDate("introduced");
-				LocalDate convDate = null;
-				if (introduced != null) {
-					convDate = introduced.toLocalDate();
-				}
-				Date discontinued = result.getDate("discontinued");
-				LocalDate convDate1 = null;
-				if (discontinued != null) {
-					convDate1 = discontinued.toLocalDate();
-				}
-				Computer computer = new Computer();
-
-				computer.setId_(result.getInt("computer.id"));
-				computer.setName(result.getString("computer.name"));
-				computer.setIntroduced(convDate);
-				computer.setDiscontinued(convDate1);
-				int company_id = result.getInt("company_id");
-				if (company_id != 0) {
-					Company company = companyDAO.find(company_id);
-					computer.setCompany(company);
-				} else
-					computer.setCompany(null);
-				computers.add(computer);
-			}
-		} catch (SQLException ex) {
-			logger.error("Echec liste d'ordinateurs "+ ex.getMessage());
-			throw new SqlCommandeException(SQL_SELECT);
-		}
+	public ArrayList<Computer> findAll() throws DataAccessException {
+		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
+		ArrayList<Computer> computers = (ArrayList<Computer>) jdbcTemplate.query(SQL_SELECT, computerRowMappeur);
 		return computers;
 	}
 
-	public ArrayList<Computer> findAll(Pagination pagination) throws SqlCommandeException {
-		ArrayList<Computer> computers = new ArrayList<Computer>();
-		Computer computer = null;
+	public ArrayList<Computer> findAll(Pagination pagination) throws DataAccessException {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("limit", pagination.getLimit());
+		mapSqlParameterSource.addValue("offset", pagination.getOffset());
+		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
+		ArrayList<Computer> computers = (ArrayList<Computer>) jdbcTemplate.query(SQL_PAGE
+				+ pagination.getByColumn().toString() + " " + pagination.getByMode().toString() + SQL_LIMIT_OFFSET,
+				mapSqlParameterSource, computerRowMappeur);
 
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE+" "+pagination.getByColumn().toString()+" "+pagination.getByMode().toString()+" "+SQL_LIMIT_OFFSET)) {
-			preparedStatement.setLong(1, pagination.getLimit());
-			preparedStatement.setLong(2, pagination.getOffset());
-			ResultSet result = preparedStatement.executeQuery();
-			while (result.next()) {
-				Date introduced = result.getDate("introduced");
-				LocalDate convDate = null;
-				if (introduced != null) {
-					convDate = introduced.toLocalDate();
-				}
-				Date discontinued = result.getDate("discontinued");
-				LocalDate convDate1 = null;
-				if (discontinued != null) {
-					convDate1 = discontinued.toLocalDate();
-				}
-				computer = new Computer(result.getInt("computer.id"), result.getString("computer.name"), convDate,
-						convDate1, result.getInt("company.id"), result.getString("company.name"));
-
-				computers.add(computer);
-
-			}
-		} catch (SQLException ex) {
-			logger.error("Echec liste d'ordinateurs "+ ex.getMessage());
-			throw new SqlCommandeException(SQL_PAGE);
-		}
 		return computers;
 	}
 
-	public ArrayList<Computer> searchComputers(String search, Pagination pagination) throws SqlCommandeException {
-		ArrayList<Computer> computers = new ArrayList<Computer>();
-		Computer computer = null;
+	public ArrayList<Computer> searchComputers(String search, Pagination pagination) throws DataAccessException {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("computerName", "%" + search + "%");
+		mapSqlParameterSource.addValue("companyName", "%" + search + "%");
+		mapSqlParameterSource.addValue("limit", pagination.getLimit());
+		mapSqlParameterSource.addValue("offset", pagination.getOffset());
+		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
 
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SEARCH+" "+pagination.getByColumn().toString()+" "+pagination.getByMode().toString()+" "+SQL_LIMIT_OFFSET)) {
-			
-			preparedStatement.setString(1, "%" + search + "%");
-			preparedStatement.setString(2, "%" + search + "%");
-			preparedStatement.setLong(3, pagination.getLimit());
-			preparedStatement.setLong(4, pagination.getOffset());
+		ArrayList<Computer> computers = (ArrayList<Computer>) jdbcTemplate.query(SQL_SEARCH
+				+ pagination.getByColumn().toString() + " " + pagination.getByMode().toString() + SQL_LIMIT_OFFSET,
+				mapSqlParameterSource, computerRowMappeur);
 
-			ResultSet resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				Date introduced = resultSet.getDate("introduced");
-				LocalDate convDate = null;
-				if (introduced != null) {
-					convDate = introduced.toLocalDate();
-				}
-				Date discontinued = resultSet.getDate("discontinued");
-				LocalDate convDate1 = null;
-				if (discontinued != null) {
-					convDate1 = discontinued.toLocalDate();
-				}
-				computer = new Computer(resultSet.getInt("computer.id"), resultSet.getString("computer.name"), convDate,
-						convDate1, resultSet.getInt("company.id"), resultSet.getString("company.name"));
-				computers.add(computer);
-			}
-		} catch (SQLException ex) {
-			logger.error("Echec de la recherche "+ ex.getMessage());
-			throw new SqlCommandeException(SQL_SEARCH);
-		}
 		return computers;
 	}
-	
+
 }

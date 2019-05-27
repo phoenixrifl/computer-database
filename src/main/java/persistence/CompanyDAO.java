@@ -1,139 +1,74 @@
 package persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.sql.DataSource;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 import exception.SqlCommandeException;
 import modele.Company;
-
+import persistence.rowMappeur.CompanyRowMappeur;
+import servlet.model.Pagination;
 
 @Component
 public class CompanyDAO {
 
-	private static final String SQL_PAGE = "SELECT * FROM company ORDER BY id LIMIT ? OFFSET ?";
+	private static final String SQL_PAGE = "SELECT * FROM company ORDER BY id LIMIT :limit OFFSET :offset";
 	private static final String SQL_SELECT = "SELECT * FROM company";
-	private static final String SQL_SELECT_ONE_COMPANY = "SELECT id,name FROM company WHERE id =";
-	private static final String SQL_DELETE_COMPANY = "DELETE FROM company WHERE id= ?";
-	private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE company_id= ?";
+	private static final String SQL_SELECT_ONE_COMPANY = "SELECT id,name FROM company WHERE id =:id";
+	private static final String SQL_DELETE_COMPANY = "DELETE FROM company WHERE id= :id";
 
+	private DataSource dataSource;
 
-	private static Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
-	private static HikariConfig config = new HikariConfig();
-	private static HikariDataSource hikariDataSource;
+	private NamedParameterJdbcTemplate jdbcTemplate;
 
-	 static {
-		 ResourceBundle bundle = ResourceBundle.getBundle("hikari");
-		 config.setDriverClassName(bundle.getString("driverClassName"));
-		 config.setJdbcUrl(bundle.getString("jdbcUrl"));
-		 config.setUsername(bundle.getString("username"));
-		 config.setPassword(bundle.getString("password"));
-		 config.addDataSourceProperty( "cachePrepStmts" , "true" );
-		 config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
-		 config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
-		 hikariDataSource = new HikariDataSource(config);
-		 }
-	public CompanyDAO() {
+	public CompanyDAO(DataSource dataSource) {
+		this.dataSource = dataSource;
+		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-
-	public Company find(long id) throws SqlCommandeException {
-		Company tmp = null;
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT_ONE_COMPANY);) {
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next()) {
-
-				tmp = new Company(resultSet.getInt("id"), resultSet.getString("name"));
-			}
-		} catch (SQLException e) {
-			logger.error("impossible de trouver la compagnie recherchée "+e.getMessage());
-			throw new SqlCommandeException(SQL_SELECT_ONE_COMPANY);
-
-		}
-		return tmp;
+	public Company find(long id) throws DataAccessException {
+		Company company = null;
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("id", id);
+		CompanyRowMappeur companyRowMappeur = new CompanyRowMappeur();
+		company = jdbcTemplate.queryForObject(SQL_SELECT_ONE_COMPANY, mapSqlParameterSource, companyRowMappeur);
+		return company;
 	}
 
-	public ArrayList<Company> findAll(int limits, int offset) throws SqlCommandeException {
-		ArrayList<Company> company_list = new ArrayList<Company>();
-		Company tmp = null;
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_PAGE);) {
-
-			preparedStatement.setLong(1, limits);
-			preparedStatement.setLong(2, offset);
-			ResultSet result = preparedStatement.executeQuery();
-
-			while (result.next()) {
-				tmp = new Company(result.getInt("id"), result.getString("name"));
-				company_list.add(tmp);
-			}
-
-		} catch (SQLException e) {
-			logger.error("pagination impossible "+e.getMessage());
-			throw new SqlCommandeException(SQL_PAGE);
-
-		}
-		return company_list;
+	public ArrayList<Company> findAll(Pagination pagination) throws SqlCommandeException {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		CompanyRowMappeur companyRowMappeur = new CompanyRowMappeur();
+		mapSqlParameterSource.addValue("limit", pagination.getLimit());
+		mapSqlParameterSource.addValue("offset", pagination.getOffset());
+		ArrayList<Company> company = (ArrayList<Company>) jdbcTemplate.query(SQL_PAGE, mapSqlParameterSource,
+				companyRowMappeur);
+		return company;
 	}
 
 	public ArrayList<Company> findAll() throws SqlCommandeException {
-		ArrayList<Company> company_list = new ArrayList<Company>();
-		Company tmp = null;
-		try (Connection connect = hikariDataSource.getConnection();
-				PreparedStatement preparedStatement = connect.prepareStatement(SQL_SELECT)) {
-
-			ResultSet result = preparedStatement.executeQuery();
-
-			while (result.next()) {
-				tmp = new Company(result.getInt("id"), result.getString("name"));
-				company_list.add(tmp);
-			}
-
-		} catch (SQLException e) {
-			logger.error("liste compagnie impossible "+ e.getMessage());
-			throw new SqlCommandeException(SQL_SELECT);
-
-		}
-		return company_list;
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		CompanyRowMappeur companyRowMappeur = new CompanyRowMappeur();
+		ArrayList<Company> company = (ArrayList<Company>) jdbcTemplate.query(SQL_SELECT, mapSqlParameterSource,
+				companyRowMappeur);
+		return company;
 	}
 
 	public boolean delete(int id) throws SqlCommandeException {
-		try(Connection connect = hikariDataSource.getConnection()){
-			try(PreparedStatement preparedStatement = connect.prepareStatement(SQL_DELETE_COMPANY);
-					PreparedStatement preparedStatement2 = connect.prepareStatement(SQL_DELETE_COMPUTER)){
-				
-				connect.setAutoCommit(false);
-				
-				preparedStatement2.setInt(1, id);
-				preparedStatement.setInt(1, id);
-				
-				preparedStatement2.executeUpdate();
-				preparedStatement.executeUpdate();
-				
-				connect.commit();
-			}catch(SQLException ex) {
-				logger.error("Echec delete company"+ ex.getMessage());
-				connect.rollback();
-			}
-		}catch(SQLException ex) {
-			logger.error("Echec delete company "+ ex.getMessage());
-			throw new SqlCommandeException(SQL_DELETE_COMPANY);
+		Company company = null;
+		company = find(id);
+		if (Objects.isNull(company))
+			return false;
 
-		}
-		return false;
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("id", id);
+
+		return (jdbcTemplate.update(SQL_DELETE_COMPANY, mapSqlParameterSource) != 0);
 	}
 
 }
