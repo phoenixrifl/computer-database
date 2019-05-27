@@ -39,8 +39,9 @@ public class ComputerService {
 		Computer computer = this.mappeur.DTOToModel(computerDto);
 		if (dateValidator.dateIsValid(computer)) {
 			this.computerDAO.create(computer);
-		}
-		return true;
+			return true;
+		} else
+			return false;
 	}
 
 	public boolean delete(int id) {

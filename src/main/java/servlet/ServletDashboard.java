@@ -6,8 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
@@ -78,7 +80,7 @@ public class ServletDashboard extends Servlet {
 
 		if (asc != null) {
 			for (OrderByMode ob : OrderByMode.values()) {
-				if (ob.toString().equals(orderbycolumn)) {
+				if (ob.toString().equals(asc)) {
 					pagination.setByMode(ob);
 				}
 			}
@@ -105,4 +107,13 @@ public class ServletDashboard extends Servlet {
 
 	}
 
+	@PostMapping(value = { "/", "/dashboard" })
+	public RedirectView doPost(@RequestParam(value = "selection", required = false) String selection, Model model) {
+		String[] spliteur = selection.split(",");
+		for (int i = 0; i < spliteur.length; i++) {
+			computerService.delete(Integer.parseInt(spliteur[i]));
+		}
+		return new RedirectView("dashboard");
+
+	}
 }

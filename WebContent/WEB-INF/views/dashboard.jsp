@@ -30,6 +30,7 @@
 
 						<input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" /> 
 						<input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
+					
 					</form>
 				</div>
 				<div class="pull-right">
@@ -40,7 +41,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="deleteComputer" method="POST">
+		<form id="deleteForm" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
