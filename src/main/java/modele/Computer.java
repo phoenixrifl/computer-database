@@ -2,29 +2,51 @@ package modele;
 
 import java.time.LocalDate;
 
-public class Computer {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "computer")
+public class Computer {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id_;
+
+	@Column(name = "name")
 	private String name;
+
+	@Column(name = "introduced")
 	private LocalDate introduced;
+
+	@Column(name = "discontinued")
 	private LocalDate discontinued;
+
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "company_id")
 	private Company company;
-	
-	public Computer() {}
-	
-	public Computer(int id_, String name, LocalDate introduced, LocalDate discontinued, int company_id, String company_name) {
+
+	public Computer() {
+	}
+
+	public Computer(int id_, String name, LocalDate introduced, LocalDate discontinued, int company_id,
+			String company_name) {
 		super();
 		this.id_ = id_;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		if(company_id != 0) {
+		if (company_id != 0) {
 			this.company = new Company(company_id, company_name);
-		}
-		else
+		} else
 			this.company = null;
 	}
-	
 
 	public String getName() {
 		return name;
@@ -57,7 +79,7 @@ public class Computer {
 	public void setId_(int id_) {
 		this.id_ = id_;
 	}
-	
+
 	public Company getCompany() {
 		return company;
 	}
@@ -65,7 +87,6 @@ public class Computer {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -112,7 +133,5 @@ public class Computer {
 		return "Computer [id_=" + id_ + ", name=" + name + ", introduced=" + introduced + ", discontinued="
 				+ discontinued + ", company_name=" + company.getName() + "]\n";
 	}
-	
-	
-	
+
 }

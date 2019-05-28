@@ -1,18 +1,24 @@
 package ui_controller;
 
+import java.util.ArrayList;
+
+import dto.CompanyDTO;
+import dto.ComputerDTO;
 import exception.SqlCommandeException;
 import service.CompanyService;
 import service.ComputerService;
+import servlet.model.Pagination;
 
 public class Controller {
 
 	private CompanyService companyService;
 	private ComputerService computerService;
+	private Pagination pagination;
 
-	public Controller(CompanyService companyService, ComputerService computerService) {
+	public Controller(CompanyService companyService, ComputerService computerService, Pagination pagination) {
 		this.companyService = companyService;
 		this.computerService = computerService;
-
+		this.pagination = pagination;
 	}
 
 	public void action() throws SqlCommandeException {
@@ -60,12 +66,12 @@ public class Controller {
 		int n = 0;
 		while (!next_page) {
 			if (computer_or_company == 1) {
-				// ArrayList<ComputerDTO> computers = computerService.findAll(10, n,
+				ArrayList<ComputerDTO> computers = computerService.findAll(this.pagination);
 				// OrderByMode.ASC, OrderByColumn.ID);
-				// computers.forEach(System.out::println);
+				computers.forEach(System.out::println);
 			} else if (computer_or_company == 2) {
-//				ArrayList<CompanyDTO> companies = companyService.findAll(10,n);
-//				companies.forEach(System.out::println);
+				ArrayList<CompanyDTO> companies = companyService.findAll(this.pagination);
+				companies.forEach(System.out::println);
 			}
 			int choix = Ui.choixPage();
 			switch (choix) {

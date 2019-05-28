@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -59,6 +60,7 @@ public class CompanyDAO {
 		return company;
 	}
 
+	@Transactional
 	public boolean delete(int id) throws SqlCommandeException {
 		Company company = null;
 		company = find(id);
