@@ -1,6 +1,6 @@
 package ui_controller;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
@@ -33,7 +33,7 @@ public class Controller {
 				pagination(2);
 				break;
 			case 3:
-				int id = Ui.demandeId();
+				long id = Ui.demandeId();
 				Ui.afficher(computerService.findOne(id));
 				break;
 			case 4:
@@ -46,7 +46,7 @@ public class Controller {
 				computerService.createDTOWithId(id, computer);
 				break;
 			case 6:
-				int idDelete = Ui.demandeDelete();
+				long idDelete = Ui.demandeDelete();
 				computerService.delete(idDelete);
 				break;
 			case 7:
@@ -66,11 +66,10 @@ public class Controller {
 		int n = 0;
 		while (!next_page) {
 			if (computer_or_company == 1) {
-				ArrayList<ComputerDTO> computers = computerService.findAll(this.pagination);
-				// OrderByMode.ASC, OrderByColumn.ID);
+				List<ComputerDTO> computers = computerService.findAll(this.pagination);
 				computers.forEach(System.out::println);
 			} else if (computer_or_company == 2) {
-				ArrayList<CompanyDTO> companies = companyService.findAll(this.pagination);
+				List<CompanyDTO> companies = companyService.findAll(this.pagination);
 				companies.forEach(System.out::println);
 			}
 			int choix = Ui.choixPage();

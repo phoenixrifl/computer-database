@@ -17,25 +17,25 @@ public class Computer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private int id_;
+	private Long id_;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "introduced")
+	@Column(name = "introduced", nullable = true, columnDefinition = "TIMESTAMP")
 	private LocalDate introduced;
 
-	@Column(name = "discontinued")
+	@Column(name = "discontinued", nullable = true, columnDefinition = "TIMESTAMP")
 	private LocalDate discontinued;
 
 	@ManyToOne(optional = true)
-	@JoinColumn(name = "company_id")
+	@JoinColumn(name = "company_id", nullable = true)
 	private Company company;
 
 	public Computer() {
 	}
 
-	public Computer(int id_, String name, LocalDate introduced, LocalDate discontinued, int company_id,
+	public Computer(Long id_, String name, LocalDate introduced, LocalDate discontinued, Long company_id,
 			String company_name) {
 		super();
 		this.id_ = id_;
@@ -72,11 +72,11 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public int getId_() {
+	public Long getId_() {
 		return id_;
 	}
 
-	public void setId_(int id_) {
+	public void setId_(Long id_) {
 		this.id_ = id_;
 	}
 
@@ -93,7 +93,7 @@ public class Computer {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
-		result = prime * result + id_;
+		result = (int) (prime * result + id_);
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;

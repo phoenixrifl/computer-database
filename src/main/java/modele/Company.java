@@ -14,25 +14,25 @@ public class Company {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private int id_;
+	private Long id_;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	public Company() {
 	}
 
-	public Company(int id_, String name) {
+	public Company(Long id_, String name) {
 		super();
 		this.id_ = id_;
 		this.name = name;
 	}
 
-	public void setId_(int id_) {
+	public void setId_(Long id_) {
 		this.id_ = id_;
 	}
 
-	public int getId_() {
+	public Long getId_() {
 		return id_;
 	}
 

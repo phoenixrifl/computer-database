@@ -7,7 +7,7 @@ public class Pagination {
 	private int page;
 	private int limit;
 	private int offset;
-	private int nbTotalComputers;
+	private long nbTotalComputers;
 	private int nbTotalPages;
 	private OrderByColumn byColumn;
 	private OrderByMode byMode;
@@ -28,7 +28,7 @@ public class Pagination {
 
 	public void pageview() {
 
-		this.nbTotalPages = this.nbTotalComputers / this.limit;
+		this.nbTotalPages = (int) (this.nbTotalComputers / this.limit);
 		if ((this.nbTotalComputers % this.limit) != 0)
 			this.nbTotalPages = this.nbTotalPages + 1;
 
@@ -77,11 +77,11 @@ public class Pagination {
 		this.offset = offset;
 	}
 
-	public int getNbTotalComputers() {
+	public long getNbTotalComputers() {
 		return nbTotalComputers;
 	}
 
-	public void setNbTotalComputers(int nbTotalComputers) {
+	public void setNbTotalComputers(long nbTotalComputers) {
 		this.nbTotalComputers = nbTotalComputers;
 	}
 

@@ -1,76 +1,45 @@
 package persistence;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import exception.SqlCommandeException;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import modele.Company;
-import persistence.rowMappeur.CompanyRowMappeur;
+import modele.QCompany;
 import servlet.model.Pagination;
 
 @Component
 public class CompanyDAO {
 
-	private static final String SQL_PAGE = "SELECT * FROM company ORDER BY id LIMIT :limit OFFSET :offset";
-	private static final String SQL_SELECT = "SELECT * FROM company";
-	private static final String SQL_SELECT_ONE_COMPANY = "SELECT id,name FROM company WHERE id =:id";
-	private static final String SQL_DELETE_COMPANY = "DELETE FROM company WHERE id= :id";
+	@PersistenceContext
+	EntityManager entityManager;
 
-	private DataSource dataSource;
+	protected final JPAQueryFactory jpaQueryFactory;
+	private QCompany qCompany = QCompany.company;
 
-	private NamedParameterJdbcTemplate jdbcTemplate;
-
-	public CompanyDAO(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+	public CompanyDAO(JPAQueryFactory jpaQueryFactory) {
+		this.jpaQueryFactory = jpaQueryFactory;
 	}
 
-	public Company find(long id) throws DataAccessException {
-		Company company = null;
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("id", id);
-		CompanyRowMappeur companyRowMappeur = new CompanyRowMappeur();
-		company = jdbcTemplate.queryForObject(SQL_SELECT_ONE_COMPANY, mapSqlParameterSource, companyRowMappeur);
-		return company;
+	public Company find(long id) {
+		return jpaQueryFactory.selectFrom(qCompany).where(qCompany.id_.eq(id)).fetchOne();
 	}
 
-	public ArrayList<Company> findAll(Pagination pagination) throws SqlCommandeException {
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		CompanyRowMappeur companyRowMappeur = new CompanyRowMappeur();
-		mapSqlParameterSource.addValue("limit", pagination.getLimit());
-		mapSqlParameterSource.addValue("offset", pagination.getOffset());
-		ArrayList<Company> company = (ArrayList<Company>) jdbcTemplate.query(SQL_PAGE, mapSqlParameterSource,
-				companyRowMappeur);
-		return company;
+	public List<Company> findAll(Pagination pagination) {
+		return jpaQueryFactory.selectFrom(qCompany).limit(pagination.getLimit()).offset(pagination.getOffset()).fetch();
 	}
 
-	public ArrayList<Company> findAll() throws SqlCommandeException {
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		CompanyRowMappeur companyRowMappeur = new CompanyRowMappeur();
-		ArrayList<Company> company = (ArrayList<Company>) jdbcTemplate.query(SQL_SELECT, mapSqlParameterSource,
-				companyRowMappeur);
-		return company;
+	public List<Company> findAll() {
+		return jpaQueryFactory.selectFrom(qCompany).fetch();
 	}
 
-	@Transactional
-	public boolean delete(int id) throws SqlCommandeException {
-		Company company = null;
-		company = find(id);
-		if (Objects.isNull(company))
-			return false;
-
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("id", id);
-
-		return (jdbcTemplate.update(SQL_DELETE_COMPANY, mapSqlParameterSource) != 0);
+	public void delete(long id) {
+		jpaQueryFactory.delete(qCompany).where(qCompany.id_.eq(id)).execute();
 	}
 
 }

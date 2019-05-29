@@ -1,6 +1,6 @@
 package servlet;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +38,7 @@ public class EditComputer extends Servlet {
 			@RequestParam(value = "companyId", required = false) String companyId, Model model)
 			throws SqlCommandeException {
 
-		ArrayList<CompanyDTO> companyDTO_list = companyService.findAll();
+		List<CompanyDTO> companyDTO_list = companyService.findAll();
 
 		model.addAttribute("id", id);
 		model.addAttribute("computerName", computerName);

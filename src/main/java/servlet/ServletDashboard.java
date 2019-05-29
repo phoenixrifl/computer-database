@@ -1,6 +1,6 @@
 package servlet;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -88,8 +88,8 @@ public class ServletDashboard extends Servlet {
 			pagination.setByMode(OrderByMode.ASC);
 		}
 
-		ArrayList<ComputerDTO> computerDTO_list = null;
-		int nbTotalComputers = 0;
+		List<ComputerDTO> computerDTO_list = null;
+		long nbTotalComputers = 0;
 		if (search == null || search.isEmpty() || search.equals("dashboard")) {
 			computerDTO_list = computerService.findAll(pagination);
 			nbTotalComputers = computerService.count();
@@ -111,7 +111,7 @@ public class ServletDashboard extends Servlet {
 	public RedirectView doPost(@RequestParam(value = "selection", required = false) String selection, Model model) {
 		String[] spliteur = selection.split(",");
 		for (int i = 0; i < spliteur.length; i++) {
-			computerService.delete(Integer.parseInt(spliteur[i]));
+			computerService.delete(Long.parseLong(spliteur[i]));
 		}
 		return new RedirectView("dashboard");
 

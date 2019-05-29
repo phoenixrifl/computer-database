@@ -11,10 +11,10 @@ public class ComputerRowMappeur implements RowMapper<Computer> {
 
 	@Override
 	public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
-		return new Computer(rs.getInt("computer.id"), rs.getString("computer.name"),
+		return new Computer(rs.getLong("computer.id"), rs.getString("computer.name"),
 				(rs.getDate("introduced") != null) ? rs.getDate("introduced").toLocalDate() : null,
 				(rs.getDate("discontinued") != null) ? rs.getDate("discontinued").toLocalDate() : null,
-				rs.getInt("company_id"), rs.getString("company.name"));
+				rs.getLong("company_id"), rs.getString("company.name"));
 	}
 
 }
