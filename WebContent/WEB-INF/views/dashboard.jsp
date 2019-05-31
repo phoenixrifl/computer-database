@@ -68,33 +68,33 @@
 						</span></th>
 
 						<th><spring:message code="computer.name" text="Computer Name"></spring:message><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a> <a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.name DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<th><spring:message code="introduced.date" text="Introduced date"></spring:message><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduce ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Discontinued Date -->
 						<th><spring:message code="discontinued.date" text="Discontinued date"></spring:message><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.discontinued DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<!-- Table header for Company -->
 						<th><spring:message code="company" text="Company"></spring:message><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name&asc=ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name&asc=DESC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=company.name DESC">
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 
@@ -124,21 +124,21 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="dashboard?page=${pagination.getPage()-1}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}"
+				<li><a href="dashboard?page=${pagination.getPage()-1}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getOrderby()}"
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 				<c:forEach begin="${pagination.getBegin()}" end="${pagination.getEnd()}" varStatus="loop">
-					<li><a href="dashboard?page=${loop.index}&limit=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}">${loop.index}</a></li>
+					<li><a href="dashboard?page=${loop.index}&limit=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getOrderby()}">${loop.index}</a></li>
 				</c:forEach>
-				<li><a href="dashboard?page=${pagination.getPage()+1}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}"
+				<li><a href="dashboard?page=${pagination.getPage()+1}&PCparPage=${pagination.getLimit()}&search=${pagination.getSearch()}&orderbycolumn=${pagination.getOrderby()}"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?page=1&limit=10&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}" class="btn btn-default">10</a> 
-				<a href="dashboard?page=1&limit=50&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}" class="btn btn-default">50</a> 
-				<a href="dashboard?page=1&limit=100&search=${pagination.getSearch()}&orderbycolumn=${pagination.getByColumn()}&asc=${pagination.getByMode()}" class="btn btn-default">100</a>
+				<a href="dashboard?page=1&limit=10&search=${pagination.getSearch()}&orderbycolumn=${pagination.getOrderby()}" class="btn btn-default">10</a> 
+				<a href="dashboard?page=1&limit=50&search=${pagination.getSearch()}&orderbycolumn=${pagination.getOrderby()}" class="btn btn-default">50</a> 
+				<a href="dashboard?page=1&limit=100&search=${pagination.getSearch()}&orderbycolumn=${pagination.getOrderby()}" class="btn btn-default">100</a>
 			</div>
 		</div>
 	</footer>

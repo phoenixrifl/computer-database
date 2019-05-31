@@ -3,6 +3,7 @@ package modele;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import dto.ConvertDate;
 
 @Entity
 @Table(name = "computer")
@@ -22,10 +25,12 @@ public class Computer {
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "introduced", nullable = true, columnDefinition = "TIMESTAMP")
+	@Column(name = "introduced", nullable = true)
+	@Convert(converter = ConvertDate.class)
 	private LocalDate introduced;
 
-	@Column(name = "discontinued", nullable = true, columnDefinition = "TIMESTAMP")
+	@Column(name = "discontinued", nullable = true)
+	@Convert(converter = ConvertDate.class)
 	private LocalDate discontinued;
 
 	@ManyToOne(optional = true)

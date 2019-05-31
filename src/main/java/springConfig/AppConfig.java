@@ -19,9 +19,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-@Configuration
+@Configuration("AppConfig")
 @EnableTransactionManagement
-@ComponentScan(basePackages = { "service, persistence, dto, validator" })
+@ComponentScan(basePackages = { "service", "persistence", "dto", "validator", "modele" })
 public class AppConfig {
 
 	@PersistenceContext
@@ -38,7 +38,7 @@ public class AppConfig {
 		return new HikariConfig("/hikari.properties");
 	}
 
-	@Bean
+	@Bean("sessionFactory")
 	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
@@ -62,7 +62,7 @@ public class AppConfig {
 		return new JPAQueryFactory(em);
 	}
 
-	Properties hibernateProperties() {
+	private Properties hibernateProperties() {
 		return new Properties() {
 			/**
 			 * 

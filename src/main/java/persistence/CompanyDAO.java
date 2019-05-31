@@ -28,14 +28,17 @@ public class CompanyDAO {
 
 	public Company find(long id) {
 		return jpaQueryFactory.selectFrom(qCompany).where(qCompany.id_.eq(id)).fetchOne();
+
 	}
 
 	public List<Company> findAll(Pagination pagination) {
 		return jpaQueryFactory.selectFrom(qCompany).limit(pagination.getLimit()).offset(pagination.getOffset()).fetch();
+
 	}
 
 	public List<Company> findAll() {
 		return jpaQueryFactory.selectFrom(qCompany).fetch();
+
 	}
 
 	public void delete(long id) {
