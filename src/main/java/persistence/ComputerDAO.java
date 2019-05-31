@@ -7,6 +7,8 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -16,6 +18,7 @@ import modele.QComputer;
 import servlet.model.Pagination;
 
 @Component
+@Transactional(propagation = Propagation.NESTED)
 public class ComputerDAO {
 
 	@PersistenceContext
@@ -59,7 +62,7 @@ public class ComputerDAO {
 		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.id_))
 				.where(qComputer.name.like("%" + pagination.getSearch() + "%")
 						.or(qCompany.name.like("%" + pagination.getSearch() + "%")))
-				.fetchCount();
+				.orderBy(pagination.getOrderby().getField()).fetchCount();
 
 	}
 

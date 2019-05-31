@@ -75,7 +75,7 @@
 								<i class="fa fa-arrow-circle-o-up"></i>
 						</a></th>
 						<th><spring:message code="introduced.date" text="Introduced date"></spring:message><a
-							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduce ASC">
+							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced ASC">
 								<i class="fa fa-arrow-circle-o-down"></i>
 						</a><a
 							href="dashboard?search=${pagination.getSearch()}&orderbycolumn=computer.introduced DESC">
