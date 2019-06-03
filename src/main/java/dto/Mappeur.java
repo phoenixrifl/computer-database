@@ -4,18 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import exception.DateFormatException;
 import modele.Company;
 import modele.Computer;
 
 @Component
 public class Mappeur {
-
-	private static Logger logger = LoggerFactory.getLogger(Mappeur.class);
 
 	public Mappeur() {
 
@@ -24,7 +19,7 @@ public class Mappeur {
 	public ComputerDTO ModelToDTO(Computer computer) {
 		ComputerDTO computerDTO = new ComputerDTO();
 		if (computer != null) {
-			computerDTO.setId(String.valueOf(computer.getId_()));
+			computerDTO.setId(computer.getId_());
 			computerDTO.setName(computer.getName());
 			if (String.valueOf(computer.getIntroduced()).equals("null"))
 				computerDTO.setIntroduced("");
@@ -35,7 +30,7 @@ public class Mappeur {
 			else
 				computerDTO.setDiscontinued(String.valueOf(computer.getDiscontinued()));
 			if (computer.getCompany() != null) {
-				computerDTO.setCompany_id(String.valueOf(computer.getCompany().getId_()));
+				computerDTO.setCompany_id(computer.getCompany().getId_());
 				if (computer.getCompany().getName() != null)
 					computerDTO.setCompany_name(computer.getCompany().getName());
 			}
@@ -44,27 +39,19 @@ public class Mappeur {
 	}
 
 	public Computer DTOToModel(ComputerDTO computerDto) {
-		LocalDate convIntro = null;
-		LocalDate convDisco = null;
-		Computer computer = null;
-		try {
+		LocalDate local1;
+		LocalDate local2;
+		System.err.println(computerDto.getIntroduced().toString() + " " + computerDto.getDiscontinued().toString());
 
-			if (!computerDto.getIntroduced().equals("null")) {
-				convIntro = LocalDate.parse(computerDto.getIntroduced());
-			}
+		local1 = (computerDto.getIntroduced() == null) ? null : LocalDate.parse(computerDto.getIntroduced());
+		local2 = (computerDto.getDiscontinued() == null) ? null : LocalDate.parse(computerDto.getDiscontinued());
 
-			if (!computerDto.getDiscontinued().equals("null")) {
-				convDisco = LocalDate.parse(computerDto.getDiscontinued());
-			}
-			computer = new Computer(Long.parseLong(computerDto.getId()), computerDto.getName(), convIntro, convDisco,
-					Long.parseLong(computerDto.getCompany_id()), computerDto.getCompany_name());
+		System.err.println(computerDto.getCompany_id());
 
-		} catch (Exception e) {
-			logger.error("erreur format date", new DateFormatException());
-			throw e;
-		}
+		return new Computer(computerDto.getId(), computerDto.getName(), local1, local2,
+				(computerDto.getCompany_id() == null) ? 0 : computerDto.getCompany_id(),
+				(computerDto.getCompany_name() == null) ? null : computerDto.getCompany_name());
 
-		return computer;
 	}
 
 	public List<Computer> DTOToModel(List<ComputerDTO> computerDto) {

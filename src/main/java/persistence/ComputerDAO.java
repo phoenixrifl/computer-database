@@ -33,7 +33,7 @@ public class ComputerDAO {
 	}
 
 	public void create(Computer obj) {
-		entityManager.persist(obj);
+		this.entityManager.merge(obj);
 	}
 
 	public void delete(Computer obj) {

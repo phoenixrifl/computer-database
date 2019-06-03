@@ -2,7 +2,6 @@ package dto;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -12,7 +11,8 @@ public class ConvertDate implements AttributeConverter<LocalDate, Timestamp> {
 
 	@Override
 	public Timestamp convertToDatabaseColumn(LocalDate locDate) {
-		return locDate == null ? null : Timestamp.valueOf(LocalDateTime.parse(locDate.toString()));
+		return locDate == null ? null : Timestamp.valueOf(locDate.atStartOfDay());
+
 	}
 
 	@Override

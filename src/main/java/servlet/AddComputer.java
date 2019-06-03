@@ -37,7 +37,7 @@ public class AddComputer extends Servlet {
 	public RedirectView doPost(@RequestParam(value = "computerName", required = false) String computerName,
 			@RequestParam(value = "introduced", required = false) String introduced,
 			@RequestParam(value = "discontinued", required = false) String discontinued,
-			@RequestParam(value = "companyId", required = false) String companyId, Model model) {
+			@RequestParam(value = "companyId", required = false) Long companyId, Model model) {
 
 		ComputerDTO computerDTO = new ComputerDTO(computerName, introduced, discontinued, companyId);
 		if (computerValidator.isAComputerValid(computerDTO)) {

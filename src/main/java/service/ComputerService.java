@@ -27,12 +27,13 @@ public class ComputerService {
 
 	public boolean createDTO(String computer_dto) {
 		String[] computer = computer_dto.split(",");
-		return create(new ComputerDTO(computer[0], computer[1], computer[2], computer[3], computer[4]));
+		return create(new ComputerDTO(Long.parseLong(computer[0]), computer[1], computer[2], computer[3],
+				Long.parseLong(computer[4])));
 	}
 
 	public void createDTOWithId(long id, String computer_dto) {
 		String[] computer = computer_dto.split(",");
-		update(new ComputerDTO(String.valueOf(id), computer[0], computer[1], computer[2], computer[3]));
+		update(new ComputerDTO(id, computer[0], computer[1], computer[2], Long.parseLong(computer[3])));
 	}
 
 	public boolean create(ComputerDTO computerDto) {

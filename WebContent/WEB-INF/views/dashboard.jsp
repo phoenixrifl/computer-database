@@ -31,7 +31,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${pagination.getNbTotalComputers()}<spring:message code="computer.found" text=" Computers found"></spring:message></h1>
+			<h1 id="homeTitle">${pagination.getNbTotalComputers()} <spring:message code="computer.found" text=" Computers found"></spring:message></h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="dashboard" method="GET" class="form-inline">

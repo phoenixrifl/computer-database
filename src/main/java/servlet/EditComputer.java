@@ -51,11 +51,11 @@ public class EditComputer extends Servlet {
 	}
 
 	@PostMapping(value = { "editComputer" })
-	public RedirectView doPost(@RequestParam(value = "id", required = false) String id,
+	public RedirectView doPost(@RequestParam(value = "id", required = false) Long id,
 			@RequestParam(value = "computerName", required = false) String computerName,
 			@RequestParam(value = "introduced", required = false) String introduced,
 			@RequestParam(value = "discontinued", required = false) String discontinued,
-			@RequestParam(value = "companyId", required = false) String companyId, Model model) {
+			@RequestParam(value = "companyId", required = false) Long companyId, Model model) {
 		ComputerDTO computerDTO = new ComputerDTO(id, computerName, introduced, discontinued, companyId);
 		if (computerValidator.isAComputerValid(computerDTO)) {
 			computerService.update(computerDTO);
