@@ -48,7 +48,7 @@ public class ComputerDAO {
 	}
 
 	public Computer find(long id) throws DataAccessException {
-		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.id_))
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
 				.where(qComputer.id_.eq(id)).fetchOne();
 
 	}
@@ -59,7 +59,7 @@ public class ComputerDAO {
 	}
 
 	public long countSearch(Pagination pagination) {
-		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.id_))
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
 				.where(qComputer.name.like("%" + pagination.getSearch() + "%")
 						.or(qCompany.name.like("%" + pagination.getSearch() + "%")))
 				.orderBy(pagination.getOrderby().getField()).fetchCount();
@@ -67,18 +67,19 @@ public class ComputerDAO {
 	}
 
 	public List<Computer> findAll() {
-		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.id_)).fetch();
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
+				.fetch();
 
 	}
 
 	public List<Computer> findAll(Pagination pagination) {
-		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.id_))
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
 				.orderBy(pagination.getOrderby().getField()).limit(pagination.getLimit()).offset(pagination.getOffset())
 				.fetch();
 	}
 
 	public List<Computer> searchComputers(Pagination pagination) {
-		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.id_))
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
 				.where(qComputer.name.like("%" + pagination.getSearch() + "%")
 						.or(qCompany.name.like("%" + pagination.getSearch() + "%")))
 				.orderBy(pagination.getOrderby().getField()).limit(pagination.getLimit()).offset(pagination.getOffset())
