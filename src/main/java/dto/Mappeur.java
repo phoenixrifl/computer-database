@@ -41,12 +41,11 @@ public class Mappeur {
 	public Computer DTOToModel(ComputerDTO computerDto) {
 		LocalDate local1;
 		LocalDate local2;
-		System.err.println(computerDto.getIntroduced().toString() + " " + computerDto.getDiscontinued().toString());
 
-		local1 = (computerDto.getIntroduced() == null) ? null : LocalDate.parse(computerDto.getIntroduced());
-		local2 = (computerDto.getDiscontinued() == null) ? null : LocalDate.parse(computerDto.getDiscontinued());
-
-		System.err.println(computerDto.getCompany_id());
+		local1 = (computerDto.getIntroduced() == null || computerDto.getIntroduced().equals("")
+				|| computerDto.getIntroduced().isEmpty()) ? null : LocalDate.parse(computerDto.getIntroduced());
+		local2 = (computerDto.getDiscontinued() == null || computerDto.getDiscontinued().equals("")
+				|| computerDto.getDiscontinued().isEmpty()) ? null : LocalDate.parse(computerDto.getDiscontinued());
 
 		return new Computer(computerDto.getId(), computerDto.getName(), local1, local2,
 				(computerDto.getCompany_id() == null) ? 0 : computerDto.getCompany_id(),
