@@ -2,11 +2,9 @@ package ui_controller;
 
 import java.util.List;
 
-import CompanyService;
-import ComputerService;
-import dto.CompanyDTO;
-import dto.ComputerDTO;
 import exception.SqlCommandeException;
+import service.CompanyService;
+import service.ComputerService;
 import servlet.model.Pagination;
 
 public class Controller {
@@ -38,12 +36,12 @@ public class Controller {
 				break;
 			case 4:
 				String computer = Ui.demandeCreate();
-				computerService.createDTO(computer);
+			//	computerService.createDTO(computer);
 				break;
 			case 5:
 				id = Ui.demandeId();
 				computer = Ui.demandeCreate();
-				computerService.createDTOWithId(id, computer);
+				//computerService.createDTOWithId(id, computer);
 				break;
 			case 6:
 				long idDelete = Ui.demandeDelete();
@@ -66,11 +64,11 @@ public class Controller {
 		int n = 0;
 		while (!next_page) {
 			if (computer_or_company == 1) {
-				List<ComputerDTO> computers = computerService.findAll(this.pagination);
-				computers.forEach(System.out::println);
+		//		List<ComputerDTO> computers = computerService.findAll(this.pagination);
+			//	computers.forEach(System.out::println);
 			} else if (computer_or_company == 2) {
-				List<CompanyDTO> companies = companyService.findAll(this.pagination);
-				companies.forEach(System.out::println);
+	//			List<CompanyDTO> companies = companyService.findAll(this.pagination);
+	//			companies.forEach(System.out::println);
 			}
 			int choix = Ui.choixPage();
 			switch (choix) {

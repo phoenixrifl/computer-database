@@ -71,7 +71,7 @@
 									class="form-control" id="companyId" name="companyId">
 									<c:forEach items="${listCompany}" var="companies">
 
-										<option value="${companies.getId()}">${companies.getName()}</option>
+										<option value="${companies.getId_()}">${companies.getName()}</option>
 									</c:forEach>
 								</select>
 							</div>

@@ -1,5 +1,6 @@
 package servlet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -11,24 +12,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import ComputerService;
 import dto.ComputerDTO;
+import dto.Mappeur;
 import exception.SqlCommandeException;
+import service.ComputerService;
 import servlet.model.Pagination;
 
 @Controller
 @SessionAttributes(value = ServletDashboard.PAGINATION, types = { Pagination.class })
-public class ServletDashboard extends Servlet {
+public class ServletDashboard extends AbstractController {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	protected static final String PAGINATION = "pagination";
 	private ComputerService computerService;
+	private Mappeur mappeur;
 
-	public ServletDashboard(ComputerService computerService) {
+	public ServletDashboard(ComputerService computerService, Mappeur mappeur) {
 		this.computerService = computerService;
+		this.mappeur = mappeur;
 	}
 
 	@ModelAttribute(PAGINATION)
@@ -69,13 +69,19 @@ public class ServletDashboard extends Servlet {
 
 		}
 
-		List<ComputerDTO> computerDTO_list = null;
+		List<ComputerDTO> computerDTO_list = new ArrayList<ComputerDTO>();
 		long nbTotalComputers = 0;
-		if (search == null || search.isEmpty() || search.equals("dashboard")) {
-			computerDTO_list = computerService.findAll(pagination);
+		if (search == null || search.isEmpty() || search.equals("dashboard")) {			
+			this.computerService.findAll(pagination).stream()
+			.map(x -> this.mappeur.ModelToDTO(x))
+			.forEach(computerDTO_list::add);
+			
 			nbTotalComputers = computerService.count();
 		} else {
-			computerDTO_list = computerService.find(pagination);
+			this.computerService.find(pagination).stream()
+			.map(x -> this.mappeur.ModelToDTO(x))
+			.forEach(computerDTO_list::add);
+			
 			nbTotalComputers = computerService.countSearch(pagination);
 
 		}

@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
-import CompanyService;
-import ComputerService;
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
+import service.CompanyService;
+import service.ComputerService;
 import validator.ComputerValidator;
 
 @Controller
-public class AddComputer extends Servlet {
-	private static final long serialVersionUID = 1L;
+public class AddComputer extends AbstractController {
 	private CompanyService companyService;
 	private ComputerService computerService;
 	private ComputerValidator computerValidator;
@@ -41,11 +40,10 @@ public class AddComputer extends Servlet {
 
 		ComputerDTO computerDTO = new ComputerDTO(computerName, introduced, discontinued, companyId);
 		if (computerValidator.isAComputerValid(computerDTO)) {
-			if (computerService.create(computerDTO))
-				model.addAttribute("reussite", "Insertion reussite");
-			else
-				model.addAttribute("echec", "Echec insertion");
-		}
+			this.computerService.create(this.mappeur.DTOToModel(computerDTO));
+			model.addAttribute("reussite", "Insertion reussite");
+		} else
+			model.addAttribute("echec", "Echec insertion");
 
 		return new RedirectView("dashboard");
 	}

@@ -12,26 +12,12 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>computer-database</groupId>
-			<artifactId>core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+	<dependencies>		
 		<dependency>
 			<groupId>computer-database</groupId>
 			<artifactId>persistence</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>computer-database</groupId>
-			<artifactId>binding</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>computer-database</groupId>
-			<artifactId>webapp</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+	
 	</dependencies>
 </project>

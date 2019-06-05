@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import modele.Company;
-import modele.Computer;
+import model.Company;
+import model.Computer;
 
 @Component
 public class Mappeur {
@@ -48,25 +48,9 @@ public class Mappeur {
 				|| computerDto.getDiscontinued().isEmpty()) ? null : LocalDate.parse(computerDto.getDiscontinued());
 
 		return new Computer(computerDto.getId(), computerDto.getName(), local1, local2,
-				(computerDto.getCompany_id() == null) ? 0 : computerDto.getCompany_id(),
-				(computerDto.getCompany_name() == null) ? null : computerDto.getCompany_name());
+				(computerDto.getCompany_id() == null || computerDto.getCompany_id() == 0) ? 0 : computerDto.getCompany_id(),
+				(computerDto.getCompany_name() == null || computerDto.getCompany_name().equals("")) ? null : computerDto.getCompany_name());
 
-	}
-
-	public List<Computer> DTOToModel(List<ComputerDTO> computerDto) {
-		List<Computer> tmp = new ArrayList<Computer>();
-		for (ComputerDTO c : computerDto) {
-			tmp.add(DTOToModel(c));
-		}
-		return tmp;
-	}
-
-	public List<ComputerDTO> ModelToDTO(List<Computer> computer) {
-		List<ComputerDTO> tmp = new ArrayList<ComputerDTO>();
-		for (Computer c : computer) {
-			tmp.add(ModelToDTO(c));
-		}
-		return tmp;
 	}
 
 	public CompanyDTO ModelToDTOCompany(Company company) {

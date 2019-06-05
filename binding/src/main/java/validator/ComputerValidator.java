@@ -37,16 +37,23 @@ public class ComputerValidator {
 	public boolean dateIsValid(ComputerDTO computerdto) {
 		LocalDate introduced = LocalDate.parse(computerdto.getIntroduced()),
 				discontinued = LocalDate.parse(computerdto.getDiscontinued());
+		boolean isValid = false;
 		if (introduced == null && discontinued != null) {
-			logger.error("introduced is null and discontinued is not null");
-			return false;
-		} else {
-			if (introduced.isAfter(discontinued)) {
-				logger.error("introduced > discontinued");
-				return false;
-			}
+			isValid = false;
+			return isValid;
+		} else if ((introduced == null || introduced != null) && discontinued == null) {
+			isValid = true;
+			return isValid;
+
 		}
-		return true;
+
+		if (introduced.isAfter(discontinued)) {
+			logger.error("date de début trop grand par rapport à date de fin");
+			isValid = false;
+		} else {
+			isValid = true;
+		}
+		return isValid;
 	}
 
 }
