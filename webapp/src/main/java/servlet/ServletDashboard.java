@@ -3,6 +3,7 @@ package servlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,7 @@ public class ServletDashboard extends AbstractController {
 		return new Pagination();
 	}
 
+	@PreAuthorize("permitAll")
 	@GetMapping(value = { "/", "/dashboard" })
 	public String getParam(@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "limit", required = false) Integer limit,
@@ -93,7 +95,7 @@ public class ServletDashboard extends AbstractController {
 		return "dashboard";
 
 	}
-
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(value = { "/", "/dashboard" })
 	public RedirectView doPost(@RequestParam(value = "selection", required = false) String selection, Model model) {
 		String[] spliteur = selection.split(",");

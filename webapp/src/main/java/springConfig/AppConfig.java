@@ -1,14 +1,18 @@
 package springConfig;
 
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import security.SecurityConfig;
+
+@EnableWebSecurity
 public class AppConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] { Config.class };
+		return new Class[] { Config.class, SecurityConfig.class };
 	}
 
 	@Override

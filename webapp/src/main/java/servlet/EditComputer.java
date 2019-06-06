@@ -3,6 +3,7 @@ package servlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class EditComputer extends AbstractController {
 		this.computerValidator = computerValidator;
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(value = { "editComputer" })
 	public String doGet(@RequestParam(value = "id", required = false) String id,
 			@RequestParam(value = "computerName", required = false) String computerName,
