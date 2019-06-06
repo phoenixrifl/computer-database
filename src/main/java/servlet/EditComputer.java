@@ -1,6 +1,6 @@
 package servlet;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +38,7 @@ public class EditComputer extends Servlet {
 			@RequestParam(value = "companyId", required = false) String companyId, Model model)
 			throws SqlCommandeException {
 
-		ArrayList<CompanyDTO> companyDTO_list = companyService.findAll();
+		List<CompanyDTO> companyDTO_list = companyService.findAll();
 
 		model.addAttribute("id", id);
 		model.addAttribute("computerName", computerName);
@@ -51,11 +51,11 @@ public class EditComputer extends Servlet {
 	}
 
 	@PostMapping(value = { "editComputer" })
-	public RedirectView doPost(@RequestParam(value = "id", required = false) String id,
+	public RedirectView doPost(@RequestParam(value = "id", required = false) Long id,
 			@RequestParam(value = "computerName", required = false) String computerName,
 			@RequestParam(value = "introduced", required = false) String introduced,
 			@RequestParam(value = "discontinued", required = false) String discontinued,
-			@RequestParam(value = "companyId", required = false) String companyId, Model model) {
+			@RequestParam(value = "companyId", required = false) Long companyId, Model model) {
 		ComputerDTO computerDTO = new ComputerDTO(id, computerName, introduced, discontinued, companyId);
 		if (computerValidator.isAComputerValid(computerDTO)) {
 			computerService.update(computerDTO);

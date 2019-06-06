@@ -1,6 +1,6 @@
 package service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -27,12 +27,13 @@ public class ComputerService {
 
 	public boolean createDTO(String computer_dto) {
 		String[] computer = computer_dto.split(",");
-		return create(new ComputerDTO(computer[0], computer[1], computer[2], computer[3], computer[4]));
+		return create(new ComputerDTO(Long.parseLong(computer[0]), computer[1], computer[2], computer[3],
+				Long.parseLong(computer[4])));
 	}
 
-	public boolean createDTOWithId(int id, String computer_dto) {
+	public void createDTOWithId(long id, String computer_dto) {
 		String[] computer = computer_dto.split(",");
-		return update(new ComputerDTO(String.valueOf(id), computer[0], computer[1], computer[2], computer[3]));
+		update(new ComputerDTO(id, computer[0], computer[1], computer[2], Long.parseLong(computer[3])));
 	}
 
 	public boolean create(ComputerDTO computerDto) {
@@ -44,44 +45,43 @@ public class ComputerService {
 			return false;
 	}
 
-	public boolean delete(int id) {
-		return this.computerDAO.delete(this.mappeur.DTOToModel(findOne(id)));
+	public void delete(Long id) {
+		this.computerDAO.delete(this.mappeur.DTOToModel(findOne(id)));
 	}
 
-	public boolean update(ComputerDTO computerDto) {
+	public void update(ComputerDTO computerDto) {
 		Computer computer = this.mappeur.DTOToModel(computerDto);
 		if (dateValidator.dateIsValid(computer)) {
 			this.computerDAO.update(computer);
 		}
-		return true;
 	}
 
-	public ComputerDTO findOne(int id) {
+	public ComputerDTO findOne(Long id) {
 		Computer computer = this.computerDAO.find(id);
 		return this.mappeur.ModelToDTO(computer);
 	}
 
-	public int count() {
+	public long count() {
 		return this.computerDAO.count();
 	}
 
-	public int countSearch(Pagination pagination) {
+	public long countSearch(Pagination pagination) {
 		return this.computerDAO.countSearch(pagination);
 	}
 
-	public ArrayList<ComputerDTO> findAll() throws SqlCommandeException {
-		ArrayList<Computer> computer = this.computerDAO.findAll();
+	public List<ComputerDTO> findAll() throws SqlCommandeException {
+		List<Computer> computer = this.computerDAO.findAll();
 		return this.mappeur.ModelToDTO(computer);
 
 	}
 
-	public ArrayList<ComputerDTO> findAll(Pagination pagination) throws SqlCommandeException {
-		ArrayList<Computer> computers = this.computerDAO.findAll(pagination);
+	public List<ComputerDTO> findAll(Pagination pagination) throws SqlCommandeException {
+		List<Computer> computers = this.computerDAO.findAll(pagination);
 		return this.mappeur.ModelToDTO(computers);
 	}
 
-	public ArrayList<ComputerDTO> find(Pagination pagination) throws SqlCommandeException {
-		ArrayList<Computer> computers = this.computerDAO.searchComputers(pagination);
+	public List<ComputerDTO> find(Pagination pagination) throws SqlCommandeException {
+		List<Computer> computers = this.computerDAO.searchComputers(pagination);
 		return this.mappeur.ModelToDTO(computers);
 	}
 

@@ -2,40 +2,35 @@ package dto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import exception.DateFormatException;
 import modele.Company;
 import modele.Computer;
+
 @Component
 public class Mappeur {
-
-	private static Logger logger = LoggerFactory.getLogger(Mappeur.class);
 
 	public Mappeur() {
 
 	}
 
-
-
 	public ComputerDTO ModelToDTO(Computer computer) {
 		ComputerDTO computerDTO = new ComputerDTO();
 		if (computer != null) {
-			computerDTO.setId(String.valueOf(computer.getId_()));
+			computerDTO.setId(computer.getId_());
 			computerDTO.setName(computer.getName());
-			if(String.valueOf(computer.getIntroduced()).equals("null"))
-					computerDTO.setIntroduced("");
+			if (String.valueOf(computer.getIntroduced()).equals("null"))
+				computerDTO.setIntroduced("");
 			else
 				computerDTO.setIntroduced(String.valueOf(computer.getIntroduced()));
-			if(String.valueOf(computer.getDiscontinued()).equals("null"))
+			if (String.valueOf(computer.getDiscontinued()).equals("null"))
 				computerDTO.setDiscontinued("");
 			else
 				computerDTO.setDiscontinued(String.valueOf(computer.getDiscontinued()));
 			if (computer.getCompany() != null) {
-				computerDTO.setCompany_id(String.valueOf(computer.getCompany().getId_()));
+				computerDTO.setCompany_id(computer.getCompany().getId_());
 				if (computer.getCompany().getName() != null)
 					computerDTO.setCompany_name(computer.getCompany().getName());
 			}
@@ -44,38 +39,30 @@ public class Mappeur {
 	}
 
 	public Computer DTOToModel(ComputerDTO computerDto) {
-		LocalDate convIntro = null;
-		LocalDate convDisco = null;
-		Computer computer = null;
-		try {
-		
-			if (!computerDto.getIntroduced().equals("null")) {
-				convIntro = LocalDate.parse(computerDto.getIntroduced());
-			}
+		LocalDate local1;
+		LocalDate local2;
 
-			if (!computerDto.getDiscontinued().equals("null")) {
-				convDisco = LocalDate.parse(computerDto.getDiscontinued());
-			}
-			computer = new Computer(Integer.parseInt(computerDto.getId()), computerDto.getName(), convIntro, convDisco, Integer.parseInt(computerDto.getCompany_id()), computerDto.getCompany_name());
-			
-		} catch (Exception e) {
-			logger.error("erreur format date", new DateFormatException());
-			throw e;
-		}
+		local1 = (computerDto.getIntroduced() == null || computerDto.getIntroduced().equals("")
+				|| computerDto.getIntroduced().isEmpty()) ? null : LocalDate.parse(computerDto.getIntroduced());
+		local2 = (computerDto.getDiscontinued() == null || computerDto.getDiscontinued().equals("")
+				|| computerDto.getDiscontinued().isEmpty()) ? null : LocalDate.parse(computerDto.getDiscontinued());
 
-		return computer;
+		return new Computer(computerDto.getId(), computerDto.getName(), local1, local2,
+				(computerDto.getCompany_id() == null) ? 0 : computerDto.getCompany_id(),
+				(computerDto.getCompany_name() == null) ? null : computerDto.getCompany_name());
+
 	}
 
-	public ArrayList<Computer> DTOToModel(ArrayList<ComputerDTO> computerDto) {
-		ArrayList<Computer> tmp = new ArrayList<Computer>();
+	public List<Computer> DTOToModel(List<ComputerDTO> computerDto) {
+		List<Computer> tmp = new ArrayList<Computer>();
 		for (ComputerDTO c : computerDto) {
 			tmp.add(DTOToModel(c));
 		}
 		return tmp;
 	}
 
-	public ArrayList<ComputerDTO> ModelToDTO(ArrayList<Computer> computer) {
-		ArrayList<ComputerDTO> tmp = new ArrayList<ComputerDTO>();
+	public List<ComputerDTO> ModelToDTO(List<Computer> computer) {
+		List<ComputerDTO> tmp = new ArrayList<ComputerDTO>();
 		for (Computer c : computer) {
 			tmp.add(ModelToDTO(c));
 		}
@@ -87,19 +74,19 @@ public class Mappeur {
 	}
 
 	public Company DTOTOModelCompany(CompanyDTO companyDto) {
-		return new Company(Integer.parseInt(companyDto.getId()), companyDto.getName());
+		return new Company(Long.parseLong(companyDto.getId()), companyDto.getName());
 	}
 
-	public ArrayList<Company> DTOToModel_(ArrayList<CompanyDTO> companyDto) {
-		ArrayList<Company> tmp = new ArrayList<Company>();
+	public List<Company> DTOToModel_(List<CompanyDTO> companyDto) {
+		List<Company> tmp = new ArrayList<Company>();
 		for (CompanyDTO c : companyDto) {
 			tmp.add(DTOTOModelCompany(c));
 		}
 		return tmp;
 	}
 
-	public ArrayList<CompanyDTO> ModelToDTO_(ArrayList<Company> company) {
-		ArrayList<CompanyDTO> tmp = new ArrayList<CompanyDTO>();
+	public List<CompanyDTO> ModelToDTO_(List<Company> company) {
+		List<CompanyDTO> tmp = new ArrayList<CompanyDTO>();
 		for (Company c : company) {
 			tmp.add(ModelToDTOCompany(c));
 		}

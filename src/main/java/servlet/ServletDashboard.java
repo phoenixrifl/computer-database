@@ -1,6 +1,6 @@
 package servlet;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +13,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import dto.ComputerDTO;
 import exception.SqlCommandeException;
-import persistence.OrderByColumn;
-import persistence.OrderByMode;
 import service.ComputerService;
 import servlet.model.Pagination;
 
@@ -43,7 +41,6 @@ public class ServletDashboard extends Servlet {
 			@RequestParam(value = "limit", required = false) Integer limit,
 			@RequestParam(value = "search", required = false) String search,
 			@RequestParam(value = "orderbycolumn", required = false) String orderbycolumn,
-			@RequestParam(value = "asc", required = false) String asc,
 			@ModelAttribute(PAGINATION) Pagination pagination, Model model) throws SqlCommandeException {
 
 		if (page == null) {
@@ -67,29 +64,13 @@ public class ServletDashboard extends Servlet {
 		}
 
 		if (orderbycolumn != null) {
-			for (OrderByColumn ob : OrderByColumn.values()) {
-				if (ob.toString().equals(orderbycolumn)) {
-					pagination.setByColumn(ob);
 
-				}
-			}
-		} else {
-			pagination.setByColumn(OrderByColumn.ID);
+			pagination.setOrderby(orderbycolumn);
 
 		}
 
-		if (asc != null) {
-			for (OrderByMode ob : OrderByMode.values()) {
-				if (ob.toString().equals(asc)) {
-					pagination.setByMode(ob);
-				}
-			}
-		} else {
-			pagination.setByMode(OrderByMode.ASC);
-		}
-
-		ArrayList<ComputerDTO> computerDTO_list = null;
-		int nbTotalComputers = 0;
+		List<ComputerDTO> computerDTO_list = null;
+		long nbTotalComputers = 0;
 		if (search == null || search.isEmpty() || search.equals("dashboard")) {
 			computerDTO_list = computerService.findAll(pagination);
 			nbTotalComputers = computerService.count();
@@ -111,7 +92,7 @@ public class ServletDashboard extends Servlet {
 	public RedirectView doPost(@RequestParam(value = "selection", required = false) String selection, Model model) {
 		String[] spliteur = selection.split(",");
 		for (int i = 0; i < spliteur.length; i++) {
-			computerService.delete(Integer.parseInt(spliteur[i]));
+			computerService.delete(Long.parseLong(spliteur[i]));
 		}
 		return new RedirectView("dashboard");
 

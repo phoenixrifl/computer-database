@@ -1,6 +1,6 @@
 package service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -27,17 +27,17 @@ public class CompanyService {
 		return this.mappeur.ModelToDTOCompany(company);
 	}
 
-	public ArrayList<CompanyDTO> findAll(Pagination pagination) throws SqlCommandeException {
-		ArrayList<Company> companies = this.companyDAO.findAll(pagination);
+	public List<CompanyDTO> findAll(Pagination pagination) throws SqlCommandeException {
+		List<Company> companies = this.companyDAO.findAll(pagination);
 		return this.mappeur.ModelToDTO_(companies);
 	}
 
-	public ArrayList<CompanyDTO> findAll() throws SqlCommandeException {
-		ArrayList<Company> companies = this.companyDAO.findAll();
+	public List<CompanyDTO> findAll() throws SqlCommandeException {
+		List<Company> companies = this.companyDAO.findAll();
 		return this.mappeur.ModelToDTO_(companies);
 	}
 
-	public boolean delete(int id) throws SqlCommandeException {
-		return this.companyDAO.delete(id);
+	public void delete(long id) throws SqlCommandeException {
+		this.companyDAO.delete(id);
 	}
 }

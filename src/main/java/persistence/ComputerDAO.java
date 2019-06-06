@@ -1,138 +1,89 @@
 package persistence;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import modele.Computer;
-import persistence.rowMappeur.ComputerRowMappeur;
+import modele.QCompany;
+import modele.QComputer;
 import servlet.model.Pagination;
 
 @Component
+@Transactional(propagation = Propagation.NESTED)
 public class ComputerDAO {
 
-	private static final String SQL_INSERT = "INSERT INTO computer (id,name,introduced,discontinued,company_id) "
-			+ "VALUES (NULL,:name,:introduced,:discontinued,:company_id);";
-	private static final String SQL_DELETE = "DELETE FROM computer WHERE id= :id";
-	private static final String SQL_SELECT_ONE = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id= :id";
-	private static final String SQL_UPDATE = "UPDATE computer SET name=:name, introduced=:introduced, discontinued=:discontinued, company_id=:company_id WHERE id =:id";
-	private static final String SQL_PAGE = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name "
-			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY ";
-	private static final String SQL_SELECT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id ";
-	private static final String SQL_COUNT = "SELECT COUNT(*) AS total FROM computer";
-	private static final String SQL_SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company_id, company.name "
-			+ "FROM computer LEFT JOIN company ON company_id = company.id "
-			+ "WHERE computer.name LIKE :computerName OR company.name LIKE :companyName ORDER BY ";
-	private static final String SQL_COUNT_SEARCH = "SELECT COUNT(*) AS total FROM computer LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE UPPER(computer.name) LIKE UPPER(:computerName) OR  UPPER(company.name) LIKE UPPER(:companyName) ";
+	@PersistenceContext
+	EntityManager entityManager;
 
-	private static final String SQL_LIMIT_OFFSET = " LIMIT :limit OFFSET :offset";
+	protected final JPAQueryFactory jpaQueryFactory;
+	private QComputer qComputer = QComputer.computer;
+	private QCompany qCompany = QCompany.company;
 
-	private DataSource dataSource;
-
-	private NamedParameterJdbcTemplate jdbcTemplate;
-
-	public ComputerDAO(DataSource dataSource) {
-		this.dataSource = dataSource;
-		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+	public ComputerDAO(JPAQueryFactory jpaQueryFactory) {
+		this.jpaQueryFactory = jpaQueryFactory;
 	}
 
-	public boolean create(Computer obj) throws DataAccessException {
+	public void create(Computer obj) {
+		this.entityManager.merge(obj);
+	}
 
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("name", obj.getName());
-		mapSqlParameterSource.addValue("introduced", obj.getIntroduced());
-		mapSqlParameterSource.addValue("discontinued", obj.getDiscontinued());
+	public void delete(Computer obj) {
+		jpaQueryFactory.delete(qComputer).where(qComputer.id_.eq(obj.getId_())).execute();
+	}
 
-		Integer company_id = (Objects.isNull(obj.getCompany())) ? null : obj.getCompany().getId_();
-		mapSqlParameterSource.addValue("company_id", company_id);
-		return (jdbcTemplate.update(SQL_INSERT, mapSqlParameterSource) == 1) ? true : false;
+	public void update(Computer obj) {
+		jpaQueryFactory.update(qComputer).where(qComputer.id_.eq(obj.getId_())).set(qComputer.id_, obj.getId_())
+				.set(qComputer.name, obj.getName()).set(qComputer.introduced, obj.getIntroduced())
+				.set(qComputer.discontinued, obj.getDiscontinued()).set(qComputer.company, obj.getCompany()).execute();
 
 	}
 
-	public boolean delete(Computer obj) throws DataAccessException {
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("id", obj.getId_());
-		return (jdbcTemplate.update(SQL_DELETE, mapSqlParameterSource) == 1) ? true : false;
+	public Computer find(long id) throws DataAccessException {
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
+				.where(qComputer.id_.eq(id)).fetchOne();
 
 	}
 
-	public boolean update(Computer obj) throws DataAccessException {
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("id", obj.getId_());
-		mapSqlParameterSource.addValue("name", obj.getName());
-		mapSqlParameterSource.addValue("introduced", obj.getIntroduced());
-		mapSqlParameterSource.addValue("discontinued", obj.getDiscontinued());
-		Integer company_id = (Objects.isNull(obj.getCompany()) || obj.getCompany().getId_() == -1) ? null
-				: obj.getCompany().getId_();
-		mapSqlParameterSource.addValue("company_id", company_id);
-		return (jdbcTemplate.update(SQL_UPDATE, mapSqlParameterSource) == 1) ? true : false;
+	public long count() throws DataAccessException {
+		return jpaQueryFactory.selectFrom(qComputer).fetchCount();
+
 	}
 
-	public Computer find(int id) throws DataAccessException {
-		Computer computer = null;
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("id", id);
-		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
-		computer = jdbcTemplate.queryForObject(SQL_SELECT_ONE, mapSqlParameterSource, computerRowMappeur);
-		return computer;
+	public long countSearch(Pagination pagination) {
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
+				.where(qComputer.name.like("%" + pagination.getSearch() + "%")
+						.or(qCompany.name.like("%" + pagination.getSearch() + "%")))
+				.orderBy(pagination.getOrderby().getField()).fetchCount();
+
 	}
 
-	public int count() throws DataAccessException {
-		int computerMax = 0;
-		JdbcTemplate jdbcTemplate1 = new JdbcTemplate(dataSource);
-		computerMax = jdbcTemplate1.queryForObject(SQL_COUNT, Integer.class);
-		return computerMax;
+	public List<Computer> findAll() {
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
+				.fetch();
+
 	}
 
-	public int countSearch(Pagination pagination) throws DataAccessException {
-		int computerSearchMax = 0;
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("computerName", "%" + pagination.getSearch() + "%");
-		mapSqlParameterSource.addValue("companyName", "%" + pagination.getSearch() + "%");
-
-		computerSearchMax = jdbcTemplate.queryForObject(SQL_COUNT_SEARCH, mapSqlParameterSource, Integer.class);
-		return computerSearchMax;
+	public List<Computer> findAll(Pagination pagination) {
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
+				.orderBy(pagination.getOrderby().getField()).limit(pagination.getLimit()).offset(pagination.getOffset())
+				.fetch();
 	}
 
-	public ArrayList<Computer> findAll() throws DataAccessException {
-		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
-		ArrayList<Computer> computers = (ArrayList<Computer>) jdbcTemplate.query(SQL_SELECT, computerRowMappeur);
-		return computers;
-	}
-
-	public ArrayList<Computer> findAll(Pagination pagination) throws DataAccessException {
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("limit", pagination.getLimit());
-		mapSqlParameterSource.addValue("offset", pagination.getOffset());
-		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
-		ArrayList<Computer> computers = (ArrayList<Computer>) jdbcTemplate.query(SQL_PAGE
-				+ pagination.getByColumn().toString() + " " + pagination.getByMode().toString() + SQL_LIMIT_OFFSET,
-				mapSqlParameterSource, computerRowMappeur);
-
-		return computers;
-	}
-
-	public ArrayList<Computer> searchComputers(Pagination pagination) throws DataAccessException {
-		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		mapSqlParameterSource.addValue("computerName", "%" + pagination.getSearch() + "%");
-		mapSqlParameterSource.addValue("companyName", "%" + pagination.getSearch() + "%");
-		mapSqlParameterSource.addValue("limit", pagination.getLimit());
-		mapSqlParameterSource.addValue("offset", pagination.getOffset());
-		ComputerRowMappeur computerRowMappeur = new ComputerRowMappeur();
-
-		ArrayList<Computer> computers = (ArrayList<Computer>) jdbcTemplate.query(SQL_SEARCH
-				+ pagination.getByColumn().toString() + " " + pagination.getByMode().toString() + SQL_LIMIT_OFFSET,
-				mapSqlParameterSource, computerRowMappeur);
-
-		return computers;
+	public List<Computer> searchComputers(Pagination pagination) {
+		return jpaQueryFactory.selectFrom(qComputer).leftJoin(qCompany).on(qCompany.id_.eq(qComputer.company.id_))
+				.where(qComputer.name.like("%" + pagination.getSearch() + "%")
+						.or(qCompany.name.like("%" + pagination.getSearch() + "%")))
+				.orderBy(pagination.getOrderby().getField()).limit(pagination.getLimit()).offset(pagination.getOffset())
+				.fetch();
 	}
 
 }

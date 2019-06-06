@@ -1,16 +1,14 @@
 package servlet.model;
 
-import persistence.OrderByColumn;
-import persistence.OrderByMode;
+import persistence.OrderBy;
 
 public class Pagination {
 	private int page;
 	private int limit;
 	private int offset;
-	private int nbTotalComputers;
+	private long nbTotalComputers;
 	private int nbTotalPages;
-	private OrderByColumn byColumn;
-	private OrderByMode byMode;
+	private OrderBy orderby;
 	private int begin;
 	private int end;
 	private String search;
@@ -21,14 +19,12 @@ public class Pagination {
 		this.begin = 1;
 		this.end = 1;
 		this.offset = limit * (page - 1);
-		this.byColumn = OrderByColumn.ID;
-		this.byMode = OrderByMode.ASC;
-
+		this.orderby = OrderBy.ID;
 	}
 
 	public void pageview() {
 
-		this.nbTotalPages = this.nbTotalComputers / this.limit;
+		this.nbTotalPages = (int) (this.nbTotalComputers / this.limit);
 		if ((this.nbTotalComputers % this.limit) != 0)
 			this.nbTotalPages = this.nbTotalPages + 1;
 
@@ -77,11 +73,11 @@ public class Pagination {
 		this.offset = offset;
 	}
 
-	public int getNbTotalComputers() {
+	public long getNbTotalComputers() {
 		return nbTotalComputers;
 	}
 
-	public void setNbTotalComputers(int nbTotalComputers) {
+	public void setNbTotalComputers(long nbTotalComputers) {
 		this.nbTotalComputers = nbTotalComputers;
 	}
 
@@ -93,20 +89,20 @@ public class Pagination {
 		this.nbTotalPages = nbTotalPages;
 	}
 
-	public OrderByColumn getByColumn() {
-		return byColumn;
+	public OrderBy getOrderby() {
+		return orderby;
 	}
 
-	public void setByColumn(OrderByColumn byColumn) {
-		this.byColumn = byColumn;
-	}
-
-	public OrderByMode getByMode() {
-		return byMode;
-	}
-
-	public void setByMode(OrderByMode byMode) {
-		this.byMode = byMode;
+	public void setOrderby(String orderby) {
+		if (orderby == null || orderby.isEmpty()) {
+			return;
+		} else {
+			for (OrderBy ob : OrderBy.values()) {
+				if (ob.toString().equals(orderby)) {
+					this.orderby = ob;
+				}
+			}
+		}
 	}
 
 	public int getBegin() {
@@ -136,8 +132,8 @@ public class Pagination {
 	@Override
 	public String toString() {
 		return "Pagination [page=" + page + ", limit=" + limit + ", offset=" + offset + ", nbTotalComputers="
-				+ nbTotalComputers + ", nbTotalPages=" + nbTotalPages + ", byColumn=" + byColumn + ", byMode=" + byMode
-				+ ", begin=" + begin + ", end=" + end + ", search=" + search + "]";
+				+ nbTotalComputers + ", nbTotalPages=" + nbTotalPages + ", orderby=" + orderby + ", begin=" + begin
+				+ ", end=" + end + ", search=" + search + "]";
 	}
 
 }

@@ -2,29 +2,56 @@ package modele;
 
 import java.time.LocalDate;
 
-public class Computer {
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-	private int id_;
+import dto.ConvertDate;
+
+@Entity
+@Table(name = "computer")
+public class Computer {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id_;
+
+	@Column(name = "name", nullable = false)
 	private String name;
+
+	@Column(name = "introduced", nullable = true)
+	@Convert(converter = ConvertDate.class)
 	private LocalDate introduced;
+
+	@Column(name = "discontinued", nullable = true)
+	@Convert(converter = ConvertDate.class)
 	private LocalDate discontinued;
+
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "company_id", nullable = true)
 	private Company company;
-	
-	public Computer() {}
-	
-	public Computer(int id_, String name, LocalDate introduced, LocalDate discontinued, int company_id, String company_name) {
+
+	public Computer() {
+	}
+
+	public Computer(Long id_, String name, LocalDate introduced, LocalDate discontinued, Long company_id,
+			String company_name) {
 		super();
 		this.id_ = id_;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		if(company_id != 0) {
+		if (company_id != 0) {
 			this.company = new Company(company_id, company_name);
-		}
-		else
+		} else
 			this.company = null;
 	}
-	
 
 	public String getName() {
 		return name;
@@ -50,14 +77,14 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public int getId_() {
+	public Long getId_() {
 		return id_;
 	}
 
-	public void setId_(int id_) {
+	public void setId_(Long id_) {
 		this.id_ = id_;
 	}
-	
+
 	public Company getCompany() {
 		return company;
 	}
@@ -66,13 +93,12 @@ public class Computer {
 		this.company = company;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
-		result = prime * result + id_;
+		result = (int) (prime * result + id_);
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -112,7 +138,5 @@ public class Computer {
 		return "Computer [id_=" + id_ + ", name=" + name + ", introduced=" + introduced + ", discontinued="
 				+ discontinued + ", company_name=" + company.getName() + "]\n";
 	}
-	
-	
-	
+
 }
