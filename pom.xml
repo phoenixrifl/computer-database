@@ -27,7 +27,7 @@
 		<logback-classic.version>1.0.9</logback-classic.version>
 		<jstl.version>1.2</jstl.version>
 		<javaee-api.version>8.0</javaee-api.version>
-		<log4j-core.version>2.3</log4j-core.version>
+		<log4j-core.version>2.13.2</log4j-core.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
 		<HikariCP.version>3.3.1</HikariCP.version>
 		<spring.version>5.1.7.RELEASE</spring.version>
