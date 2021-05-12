@@ -37,7 +37,7 @@
 		<querydsl.version>4.0.6</querydsl.version>
 		<javaxpersistence.version>1.0.2</javaxpersistence.version>
 		<javax.servlet.version>3.0-alpha-1</javax.servlet.version>
-		<spring.security.version>5.1.5.RELEASE</spring.security.version>
+		<spring.security.version>5.2.10.RELEASE</spring.security.version>
 
 
 	</properties>
